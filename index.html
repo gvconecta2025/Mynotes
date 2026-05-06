@@ -71,11 +71,11 @@
             gap: 5px;
         }
 
-        /* Dropdown da Conta */
+        /* Dropdown da Conta - Posicionamento e Sombra */
         #user-dropdown {
             box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.9);
             border: 1px solid rgba(62, 90, 122, 0.5);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(24px);
         }
     </style>
 </head>
@@ -100,9 +100,9 @@
                     <span class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Ou Email</span>
                     <div class="h-px bg-white/10 flex-1"></div>
                 </div>
-                <input type="email" id="login-email" required placeholder="Email" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-sm text-gray-200 outline-none focus:border-[#3E5A7A] transition-colors" value="admin@mynotes.com">
+                <input type="email" id="login-email" required placeholder="E-mail da sua conta" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-sm text-gray-200 outline-none focus:border-[#3E5A7A] transition-colors" value="">
                 <div class="relative">
-                    <input type="password" id="login-pass" required placeholder="Senha" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-sm text-gray-200 outline-none focus:border-[#3E5A7A] transition-colors" value="password123">
+                    <input type="password" id="login-pass" required placeholder="Senha" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-sm text-gray-200 outline-none focus:border-[#3E5A7A] transition-colors" value="">
                     <button type="button" onclick="window.togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white"><i data-lucide="eye" id="eye-icon" width="16"></i></button>
                 </div>
                 <button type="submit" class="mt-4 w-full bg-[#3E5A7A] hover:bg-[#2b4058] text-white font-bold py-3 rounded-xl shadow-lg transition-all active:scale-95">Entrar</button>
@@ -111,15 +111,16 @@
     </div>
 
     <!-- BARRA LATERAL -->
-    <aside class="w-24 h-full bg-black/50 border-r border-white/5 flex flex-col items-center py-6 shrink-0 z-[500]">
-        <!-- Minha Conta (Overflow Visible para Dropdown) -->
-        <div class="relative flex flex-col items-center shrink-0 w-full px-2 mb-4">
+    <!-- Ajustado para overflow: visible para permitir o dropdown sobreposto -->
+    <aside class="w-24 h-full bg-black/50 border-r border-white/5 flex flex-col items-center py-6 shrink-0 z-[500] overflow-visible">
+        <!-- Minha Conta -->
+        <div class="relative flex flex-col items-center shrink-0 w-full px-2 mb-4 overflow-visible">
             <button onclick="window.toggleUserMenu(event)" id="account-btn" class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center border-2 border-[#3E5A7A] shadow-lg hover:scale-110 transition-transform cursor-pointer relative z-[600]">
                 <i data-lucide="user" class="text-white" width="20" height="20"></i>
             </button>
             <span class="text-[9px] font-bold uppercase tracking-wider mt-2 text-slate-400">Conta</span>
             
-            <!-- Dropdown da Conta (Z-index altíssimo e fora de clips) -->
+            <!-- Dropdown da Conta (Sobreposto e Fluido) -->
             <div id="user-dropdown" class="hidden absolute top-0 left-24 bg-[#0a0c10] border border-[#3E5A7A]/40 rounded-2xl p-5 w-64 z-[999] opacity-0 scale-95 transition-all duration-200 origin-left">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-10 h-10 bg-[#3E5A7A]/20 rounded-full flex items-center justify-center">
@@ -140,7 +141,7 @@
 
         <div class="w-10 h-px bg-white/10 mb-4 shrink-0"></div>
         
-        <!-- Categorias com Scroll Independente -->
+        <!-- Categorias (Apenas esta área tem scroll interno) -->
         <nav class="flex-1 flex flex-col gap-3 w-full items-center overflow-y-auto hide-scrollbar" id="nav-categories"></nav>
         
         <!-- Ajustes e Privado -->
@@ -166,7 +167,7 @@
                 <button onclick="window.toggleCalendar(event)" id="btn-calendar" class="bg-[#3E5A7A] border border-transparent rounded-xl w-[42px] h-[42px] flex items-center justify-center text-white hover:bg-[#2b4058] shadow-lg z-[400] relative"><i data-lucide="calendar" width="18"></i></button>
                 
                 <!-- Calendário Widget -->
-                <div id="calendar-widget" class="hidden absolute top-[60px] right-0 bg-[#0a0c10]/95 backdrop-blur-xl border border-[#3E5A7A]/30 p-5 rounded-2xl w-72 shadow-[0_30px_60px_rgba(0,0,0,0.8)] transition-all z-[800] opacity-0 scale-95 origin-top-right">
+                <div id="calendar-widget" class="hidden absolute top-[60px] right-0 bg-[#0a0c10]/95 backdrop-blur-xl border border-[#3E5A7A]/30 p-5 rounded-2xl w-72 shadow-2xl transition-all z-[800] opacity-0 scale-95 origin-top-right">
                     <div class="flex justify-between items-center mb-4">
                         <button onclick="window.changeMonth(-1)" class="p-1 text-gray-400 hover:text-white"><i data-lucide="chevron-left" width="16"></i></button>
                         <h3 id="calendar-month-year" class="text-[10px] uppercase tracking-widest text-[#3E5A7A] font-bold">...</h3>
@@ -238,7 +239,7 @@
 
         // --- STATE ---
         window.state = {
-            notebooks: [], category: 'Todas', search: '', privacyMode: false, showSettings: false, calendarOpen: false, globalShowLines: true, isGlobalEditMode: false, expandedNoteId: null, calendarDate: new Date(), isAuthenticated: false, userId: null, userEmail: 'admin@mynotes.com'
+            notebooks: [], category: 'Todas', search: '', privacyMode: false, showSettings: false, calendarOpen: false, globalShowLines: true, isGlobalEditMode: false, expandedNoteId: null, calendarDate: new Date(), isAuthenticated: false, userId: null, userEmail: ''
         };
 
         let unsubscribeSnapshot = null;
@@ -247,21 +248,31 @@
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 window.state.userId = user.uid;
-                if(window.state.isAuthenticated) loadNotebooks();
+                // Só carrega se já logou visualmente
+                if(window.state.isAuthenticated && window.state.userEmail) loadNotebooks();
             }
         });
 
+        // Função para carregar notebooks baseados no e-mail (permite multi-contas simuladas)
         function loadNotebooks() {
-             const notesRef = collection(db, 'artifacts', 'mynotes-app', 'users', window.state.userId, 'notebooks');
+             const emailSlug = normalize(window.state.userEmail).replace(/[^a-z0-9]/g, "_");
+             // Usamos o e-mail como chave secundária para separar os dados de cada usuário no Firestore
+             const notesRef = collection(db, 'artifacts', 'mynotes-app', 'users', emailSlug, 'notebooks');
+             
              if(unsubscribeSnapshot) unsubscribeSnapshot();
              unsubscribeSnapshot = onSnapshot(notesRef, (snapshot) => {
-                 const loaded = []; snapshot.forEach(d => loaded.push({ id: d.id, ...d.data(), isOpen: false, currentPage: 0 }));
+                 const loaded = []; 
+                 snapshot.forEach(d => loaded.push({ id: d.id, ...d.data(), isOpen: false, currentPage: 0 }));
                  loaded.sort((a,b) => a.id.localeCompare(b.id));
+                 
                  window.state.notebooks = loaded.map(n => {
                      const ex = window.state.notebooks.find(x => x.id === n.id);
                      return ex ? { ...n, isOpen: ex.isOpen, currentPage: ex.currentPage } : n;
                  });
+                 
                  if(window.state.isAuthenticated) window.renderApp();
+             }, (error) => {
+                 console.error("Erro no Firebase Snapshot:", error);
              });
         }
 
@@ -271,25 +282,46 @@
         window.performLogin = (e) => {
             e.preventDefault();
             const emailInput = document.getElementById('login-email').value;
-            window.state.userEmail = emailInput || 'admin@mynotes.com';
+            if(!emailInput || !emailInput.includes('@')) {
+                alert("Por favor, insira um e-mail válido.");
+                return;
+            }
+            window.state.userEmail = emailInput;
             window.state.isAuthenticated = true;
+            document.getElementById('display-user-email').innerText = window.state.userEmail;
             document.getElementById('login-screen').classList.add('opacity-0', 'pointer-events-none');
+            
             window.renderApp();
             if(window.state.userId) loadNotebooks();
         };
 
         window.performGoogleLogin = () => {
             const emailInput = document.getElementById('login-email').value;
-            // Simula pegar o e-mail do campo ou usa um padrão se vazio
-            window.state.userEmail = emailInput && emailInput.includes('@') ? emailInput : 'google.user@gmail.com';
-            window.state.isAuthenticated = true;
-            document.getElementById('login-screen').classList.add('opacity-0', 'pointer-events-none');
-            window.renderApp();
-            if(window.state.userId) loadNotebooks();
+            let email = emailInput;
+            
+            // Se o campo estiver vazio, solicita o e-mail para simular a escolha da conta
+            if(!email || !email.includes('@')) {
+                email = prompt("Escolha a conta Google (insira o e-mail):", "seu-email@gmail.com");
+            }
+            
+            if(email && email.includes('@')) {
+                window.state.userEmail = email;
+                window.state.isAuthenticated = true;
+                document.getElementById('display-user-email').innerText = window.state.userEmail;
+                document.getElementById('login-screen').classList.add('opacity-0', 'pointer-events-none');
+                window.renderApp();
+                if(window.state.userId) loadNotebooks();
+            }
         };
 
         window.performLogout = () => {
-            location.reload();
+            // Limpa estado e recarrega a simulação
+            window.state.isAuthenticated = false;
+            window.state.userEmail = '';
+            window.state.notebooks = [];
+            document.getElementById('login-screen').classList.remove('opacity-0', 'pointer-events-none');
+            window.toggleUserMenu(null, true);
+            window.renderApp();
         };
 
         window.toggleUserMenu = (e, fc = false) => {
@@ -300,8 +332,10 @@
                 setTimeout(() => d.classList.add('hidden'), 200);
             } else {
                 d.classList.remove('hidden'); 
-                setTimeout(() => d.classList.remove('opacity-0', 'scale-95'), 10);
-                lucide.createIcons();
+                setTimeout(() => {
+                    d.classList.remove('opacity-0', 'scale-95');
+                    lucide.createIcons();
+                }, 10);
             }
         };
 
@@ -449,7 +483,6 @@
         window.renderApp = function() {
             if(!window.state.isAuthenticated) return;
             
-            // Atualiza e-mail no perfil
             const emailEl = document.getElementById('display-user-email');
             if(emailEl) emailEl.innerText = window.state.userEmail;
 
@@ -523,39 +556,47 @@
         
         window.saveNoteData = async (id) => {
             const n = window.state.notebooks.find(x => x.id === id);
-            if(n && window.state.userId) {
-                const ref = doc(db, 'artifacts', 'mynotes-app', 'users', window.state.userId, 'notebooks', id);
+            if(n && window.state.userEmail) {
+                const emailSlug = normalize(window.state.userEmail).replace(/[^a-z0-9]/g, "_");
+                const ref = doc(db, 'artifacts', 'mynotes-app', 'users', emailSlug, 'notebooks', id);
                 await updateDoc(ref, { pages: n.pages });
             }
         };
 
         window.updateNoteMeta = async (id, f, v) => {
             const n = window.state.notebooks.find(x => x.id === id);
-            if(n) {
+            if(n && window.state.userEmail) {
                 n[f] = v;
-                const ref = doc(db, 'artifacts', 'mynotes-app', 'users', window.state.userId, 'notebooks', id);
+                const emailSlug = normalize(window.state.userEmail).replace(/[^a-z0-9]/g, "_");
+                const ref = doc(db, 'artifacts', 'mynotes-app', 'users', emailSlug, 'notebooks', id);
                 await updateDoc(ref, { [f]: v });
             }
         };
 
         window.createNewNote = async (cat) => {
+            if(!window.state.userEmail) return;
             const n = { title: 'Nova Caderneta', subtitle: 'Descritivo', date: new Date().toLocaleDateString('pt-BR'), tags: ['novo'], category: cat || 'Geral', color: 'bg-[#5f6368]', showLines: true, pages: [''] };
-            const ref = collection(db, 'artifacts', 'mynotes-app', 'users', window.state.userId, 'notebooks');
+            const emailSlug = normalize(window.state.userEmail).replace(/[^a-z0-9]/g, "_");
+            const ref = collection(db, 'artifacts', 'mynotes-app', 'users', emailSlug, 'notebooks');
             await addDoc(ref, n);
         };
 
         window.handleDeleteAll = async () => {
-            if(confirm("Deseja apagar tudo permanentemente?")) {
+            if(!window.state.userEmail) return;
+            if(confirm("Deseja apagar tudo desta conta permanentemente?")) {
+                const emailSlug = normalize(window.state.userEmail).replace(/[^a-z0-9]/g, "_");
                 for(let n of window.state.notebooks) {
-                    const ref = doc(db, 'artifacts', 'mynotes-app', 'users', window.state.userId, 'notebooks', n.id);
+                    const ref = doc(db, 'artifacts', 'mynotes-app', 'users', emailSlug, 'notebooks', n.id);
                     await deleteDoc(ref);
                 }
             }
         };
 
         window.generateTestData = async () => {
-            const test = [{ title: 'Guia MyNotes', subtitle: 'Como usar', date: '01/01/2026', category: 'Geral', color: 'bg-[#3E5A7A]', pages: ['<h1>Bem-vindo!</h1><p>Experimente o painel de <b>formatação</b> acima.</p>'] }];
-            const ref = collection(db, 'artifacts', 'mynotes-app', 'users', window.state.userId, 'notebooks');
+            if(!window.state.userEmail) return;
+            const test = [{ title: 'Guia MyNotes', subtitle: 'Como usar', date: '01/01/2026', category: 'Geral', color: 'bg-[#3E5A7A]', pages: ['<h1>Bem-vindo!</h1><p>Esta conta é exclusiva para <b>' + window.state.userEmail + '</b>.</p>'] }];
+            const emailSlug = normalize(window.state.userEmail).replace(/[^a-z0-9]/g, "_");
+            const ref = collection(db, 'artifacts', 'mynotes-app', 'users', emailSlug, 'notebooks');
             for(let n of test) await addDoc(ref, n);
             window.toggleSettings();
         };
