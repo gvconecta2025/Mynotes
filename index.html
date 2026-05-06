@@ -60,7 +60,7 @@
             <button onclick="window.togglePrivacy()" id="btn-privacy" class="p-3 rounded-xl transition-all text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20" title="Ativar Escudo de Privacidade">
                 <i data-lucide="shield-off" width="22" height="22"></i>
             </button>
-            <button class="p-3 text-gray-500 hover:text-gray-300">
+            <button onclick="window.toggleSettings()" id="btn-settings" class="p-3 text-gray-500 hover:text-gray-300 transition-all rounded-xl" title="Configurações Principais">
                 <i data-lucide="settings" width="22" height="22"></i>
             </button>
         </div>
@@ -69,7 +69,8 @@
     <!-- ÁREA PRINCIPAL -->
     <main class="flex-1 flex flex-col relative overflow-hidden bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-800/20 via-[#0a0c10] to-[#0a0c10]">
         
-        <header class="px-12 py-10 flex justify-between items-start z-10 shrink-0">
+        <!-- CABEÇALHO DA LISTAGEM -->
+        <header id="main-header" class="px-12 py-10 flex justify-between items-start z-10 shrink-0 transition-opacity duration-300">
             <div>
                 <h1 class="text-4xl font-light tracking-tight text-white mb-2">
                     Meus <span class="font-bold text-[#3E5A7A] font-serif">Cadernos</span>
@@ -93,7 +94,7 @@
                     />
                 </div>
 
-                <!-- Calendário Estático (Maio 2026) -->
+                <!-- Calendário Estático -->
                 <div class="bg-white/5 border border-white/10 p-5 rounded-2xl w-72 backdrop-blur-sm">
                     <h3 class="text-[10px] uppercase tracking-widest text-[#3E5A7A] mb-4 text-center font-bold">Maio 2026</h3>
                     <div class="grid grid-cols-7 gap-y-3 gap-x-1 text-[11px] text-center font-medium" id="calendar-grid">
@@ -105,12 +106,63 @@
             </div>
         </header>
 
-        <!-- PALCO DAS CADERNETAS (Agora com scroll vertical para as prateleiras) -->
-        <section id="notebooks-container" class="flex-1 overflow-y-auto pb-12 pt-4 z-10 w-full perspective-[1000px]">
+        <!-- PALCO DAS CADERNETAS -->
+        <section id="notebooks-container" class="flex-1 overflow-y-auto pb-12 pt-4 z-10 w-full perspective-[1000px] transition-opacity duration-300">
             <!-- Prateleiras injetadas via JS -->
             <div class="text-gray-500 flex flex-col items-center justify-center w-full h-full mt-20">
                <i data-lucide="loader-2" class="animate-spin w-10 h-10 mb-4"></i>
                <p>A ligar à nuvem...</p>
+            </div>
+        </section>
+
+        <!-- PAINEL DE CONFIGURAÇÕES (Oculto por defeito) -->
+        <section id="settings-panel" class="hidden absolute inset-0 bg-[#0a0c10]/95 backdrop-blur-xl z-30 overflow-y-auto p-12">
+            <div class="max-w-4xl mx-auto bg-white/5 border border-white/10 rounded-3xl p-12 shadow-2xl mt-10">
+                <div class="flex justify-between items-center mb-10 border-b border-white/10 pb-6">
+                    <div>
+                        <h2 class="text-3xl font-serif text-white tracking-wide mb-2">Painel de Configurações</h2>
+                        <p class="text-slate-400 text-sm">Controle as suas preferências e dados do MyNotes.</p>
+                    </div>
+                    <button onclick="window.toggleSettings()" class="p-3 bg-white/5 hover:bg-white/10 rounded-full transition-colors text-slate-300 hover:text-white">
+                        <i data-lucide="x" width="24" height="24"></i>
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <!-- Configurações de Conta -->
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-bold flex items-center gap-3 text-[#3E5A7A]"><i data-lucide="user"></i> Autenticação</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">Atualmente está a usar uma sessão anónima segura. O seu ID único permite-lhe aceder a estes dados apenas neste dispositivo.</p>
+                        <div class="flex gap-4 pt-2">
+                            <button class="bg-white/10 hover:bg-white/20 px-5 py-2.5 rounded-lg text-sm font-medium transition-colors border border-white/5">Vincular Email</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Configurações Visuais -->
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-bold flex items-center gap-3 text-[#3E5A7A]"><i data-lucide="palette"></i> Aparência</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">Personalize a textura das capas e o tema global da plataforma (disponível na próxima atualização).</p>
+                        <div class="flex gap-4 pt-2">
+                            <button class="bg-[#3E5A7A] hover:bg-[#2b4058] px-5 py-2.5 rounded-lg text-sm font-medium transition-colors text-white">Modo Escuro (Ativo)</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Gestão de Dados (Onde vamos injectar os dados de teste) -->
+                    <div class="space-y-4 md:col-span-2 border-t border-white/10 pt-8 mt-4">
+                        <h3 class="text-xl font-bold flex items-center gap-3 text-emerald-500"><i data-lucide="database"></i> Gestão de Dados & Prateleiras</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed max-w-2xl">
+                            Para testar o layout de "Prateleiras Estilo Netflix", pode gerar um conjunto de cadernetas fictícias predefinidas. Isto irá popular a sua base de dados com cadernos coloridos em diferentes categorias.
+                        </p>
+                        <div class="flex gap-4 pt-4">
+                            <button id="btn-generate-test" onclick="window.generateTestData()" class="bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 border border-emerald-500/30 px-6 py-3 rounded-xl text-sm font-bold tracking-wide transition-all flex items-center gap-2">
+                                <i data-lucide="sparkles" width="18" height="18"></i> Gerar Cadernetas de Teste
+                            </button>
+                            <button onclick="alert('Funcionalidade em desenvolvimento.')" class="bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 px-6 py-3 rounded-xl text-sm font-bold tracking-wide transition-all flex items-center gap-2">
+                                <i data-lucide="trash-2" width="18" height="18"></i> Limpar Tudo
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -142,6 +194,7 @@
             category: 'Todas',
             search: '',
             privacyMode: false,
+            showSettings: false,
             userId: null
         };
 
@@ -173,48 +226,109 @@
                      loadedNotes.push({ id: doc.id, ...doc.data(), isOpen: false, currentPage: 0, isEditing: false });
                  });
                  
-                 if(loadedNotes.length === 0){
-                    seedInitialData(notesRef);
-                 } else {
-                     window.state.notebooks = loadedNotes.map(newNote => {
-                         const existingNote = window.state.notebooks.find(n => n.id === newNote.id);
-                         return existingNote ? { ...newNote, isOpen: existingNote.isOpen, currentPage: existingNote.currentPage, isEditing: existingNote.isEditing } : newNote;
-                     });
-                     renderApp();
-                 }
+                 // Preservar estado aberto/página atual se já existiam na UI
+                 window.state.notebooks = loadedNotes.map(newNote => {
+                     const existingNote = window.state.notebooks.find(n => n.id === newNote.id);
+                     return existingNote ? { ...newNote, isOpen: existingNote.isOpen, currentPage: existingNote.currentPage, isEditing: existingNote.isEditing } : newNote;
+                 });
+                 window.renderApp();
 
              }, (error) => {
                  console.error("Erro ao carregar notas:", error);
              });
         }
 
-        async function seedInitialData(notesRef) {
-             const initialData = [
-                {
-                    title: 'Acessos & Senhas', subtitle: 'Criptografia Pessoal', date: '06/05/2026', tags: ['segurança', 'root'], category: 'Senhas', color: 'bg-[#3E5A7A]',
-                    pages: ['Servidor Principal\nIP: 192.168.1.100\nUser: admin_master\nPass: **********\n\nBanco de Dados\nPorta: 5432\nPass: DB_secure_2026!', 'Contas Pessoais\n\nEmail: user@mynotes.com\nPass: **********']
-                },
-                {
-                    title: 'Scripts Python', subtitle: 'Automação e Logs', date: '04/05/2026', tags: ['dev', 'python'], category: 'Códigos', color: 'bg-[#2A363B]',
-                    pages: ['def backup_routine():\n    print("Iniciando backup...")\n    # Conectar ao S3\n    return True\n\nbackup_routine()']
-                },
-                {
-                    title: 'Diário de Ideias', subtitle: 'Brainstorming Mensal', date: '01/05/2026', tags: ['pessoal', 'criativo'], category: 'Geral', color: 'bg-[#4A5D23]',
-                    pages: ['Nova arquitetura visual para o projeto.\n\nFoco na memória espacial e na sensação de usar papel real no ambiente digital.']
-                }
+        // --- GERAÇÃO DE DADOS DE TESTE (Para prateleiras) ---
+        window.generateTestData = async () => {
+             if(!window.state.userId) return;
+             
+             const btn = document.getElementById('btn-generate-test');
+             if(btn) {
+                 btn.innerHTML = '<i data-lucide="loader-2" class="animate-spin w-4 h-4"></i> A Gerar...';
+                 btn.disabled = true;
+                 lucide.createIcons();
+             }
+
+             const dateStr = new Date().toLocaleDateString('pt-BR');
+             
+             const testNotebooks = [
+                // Categoria: Senhas
+                { title: 'Acessos & Senhas', subtitle: 'Criptografia Pessoal', date: dateStr, tags: ['segurança', 'root'], category: 'Senhas', color: 'bg-[#3E5A7A]', pages: ['Servidor Principal\nIP: 192.168.1.100\nUser: admin\nPass: *****'] },
+                { title: 'Redes Sociais', subtitle: 'Perfis Públicos', date: dateStr, tags: ['social', 'web'], category: 'Senhas', color: 'bg-[#8B4513]', pages: ['Twitter\nUser: mynotes_dev\n\nLinkedIn\nEmail: dev@mynotes.com'] },
+                { title: 'Bancos & Cartões', subtitle: 'Finanças', date: dateStr, tags: ['banco', 'privado'], category: 'Senhas', color: 'bg-[#191970]', pages: ['Conta Principal\nAgência: 0001\nConta: 123456-7'] },
+                { title: 'Emails', subtitle: 'Trabalho e Pessoal', date: dateStr, tags: ['email', 'contato'], category: 'Senhas', color: 'bg-[#483D8B]', pages: ['Gmail Pessoal\n...\n\nOutlook Trabalho\n...'] },
+                { title: 'Chaves de Software', subtitle: 'Licenças', date: dateStr, tags: ['keys', 'software'], category: 'Senhas', color: 'bg-[#2F4F4F]', pages: ['Windows 11 Pro\nXXXXX-XXXXX-XXXXX-XXXXX\n\nOffice 365\nYYYYY-YYYYY-YYYYY-YYYYY'] },
+                
+                // Categoria: Códigos
+                { title: 'Scripts Python', subtitle: 'Automação e Logs', date: dateStr, tags: ['dev', 'python'], category: 'Códigos', color: 'bg-[#2A363B]', pages: ['def backup_routine():\n    print("Iniciando backup...")\n    return True'] },
+                { title: 'Componentes React', subtitle: 'UI Kits', date: dateStr, tags: ['frontend', 'react'], category: 'Códigos', color: 'bg-[#008080]', pages: ['export default function Button({ text }) {\n  return <button>{text}</button>;\n}'] },
+                { title: 'Configurações Docker', subtitle: 'Infraestrutura', date: dateStr, tags: ['devops', 'docker'], category: 'Códigos', color: 'bg-[#4682B4]', pages: ['FROM node:18-alpine\nWORKDIR /app\nCOPY package.json .\nRUN npm install'] },
+                { title: 'Queries SQL', subtitle: 'Base de Dados', date: dateStr, tags: ['sql', 'db'], category: 'Códigos', color: 'bg-[#556B2F]', pages: ['SELECT * FROM users\nWHERE active = true\nORDER BY created_at DESC;'] },
+                { title: 'Snippets CSS', subtitle: 'Animações', date: dateStr, tags: ['css', 'design'], category: 'Códigos', color: 'bg-[#D2691E]', pages: ['.fade-in {\n  animation: fadeIn 0.3s ease-in;\n}\n@keyframes fadeIn {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}'] },
+                
+                // Categoria: Geral
+                { title: 'Diário de Ideias', subtitle: 'Brainstorming Mensal', date: dateStr, tags: ['pessoal', 'criativo'], category: 'Geral', color: 'bg-[#4A5D23]', pages: ['Nova arquitetura visual para o projeto.\n\nFoco na memória espacial.'] },
+                { title: 'Lista de Compras', subtitle: 'Casa & Essenciais', date: dateStr, tags: ['casa', 'mercado'], category: 'Geral', color: 'bg-[#CD5C5C]', pages: ['- Café em grão\n- Leite de aveia\n- Pão de massa mãe\n- Maçãs'] },
+                { title: 'Viagem 2026', subtitle: 'Planeamento', date: dateStr, tags: ['férias', 'viagem'], category: 'Geral', color: 'bg-[#8FBC8F]', pages: ['Voo: Reservado para dia 15.\nHotel: Confirmar check-in.\nRoteiro: Dia 1 - Museu...'] },
+                { title: 'Metas do Ano', subtitle: 'Objetivos Pessoais', date: dateStr, tags: ['metas', 'foco'], category: 'Geral', color: 'bg-[#6B8E23]', pages: ['1. Lançar o MyNotes.\n2. Ler 12 livros.\n3. Aprender Rust.'] },
+                { title: 'Reuniões Semanais', subtitle: 'Atas e Notas', date: dateStr, tags: ['trabalho', 'atas'], category: 'Geral', color: 'bg-[#BDB76B]', pages: ['Reunião de Alinhamento - 10/05\n- Discutir nova feature de prateleiras.\n- Ajustar bugs do Firebase.'] }
             ];
 
-            for(const note of initialData){
-                await addDoc(notesRef, note);
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'mynotes-app';
+            const notesRef = collection(db, 'artifacts', appId, 'users', window.state.userId, 'notebooks');
+
+            for(const note of testNotebooks){
+                try {
+                    await addDoc(notesRef, note);
+                } catch(e) { console.error(e); }
             }
+            
+            if(btn) {
+                 btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Cadernetas Geradas!';
+                 btn.classList.replace('text-emerald-400', 'text-white');
+                 btn.classList.replace('bg-emerald-600/20', 'bg-emerald-500');
+                 lucide.createIcons();
+            }
+            
+            // Fecha o painel de configurações para ver o resultado após 1 segundo
+            setTimeout(() => {
+                window.toggleSettings();
+                if(btn) { // Reset button state for future
+                    btn.disabled = false;
+                    btn.innerHTML = '<i data-lucide="sparkles" width="18" height="18"></i> Gerar Cadernetas de Teste';
+                    btn.classList.replace('text-white', 'text-emerald-400');
+                    btn.classList.replace('bg-emerald-500', 'bg-emerald-600/20');
+                }
+            }, 1000);
         }
+
 
         // --- LÓGICA DE RENDERIZAÇÃO ---
         window.renderApp = function() {
             renderSidebar();
-            renderHeader();
-            renderCalendar();
-            renderNotebooks();
+            
+            const header = document.getElementById('main-header');
+            const container = document.getElementById('notebooks-container');
+            const settingsPanel = document.getElementById('settings-panel');
+
+            if (window.state.showSettings) {
+                // Modo Painel de Configurações
+                header.classList.add('opacity-0', 'pointer-events-none', 'hidden');
+                container.classList.add('opacity-0', 'pointer-events-none', 'hidden');
+                settingsPanel.classList.remove('hidden');
+                // Pequeno delay para a animação de entrada
+                setTimeout(() => settingsPanel.classList.remove('opacity-0'), 10);
+            } else {
+                // Modo Prateleiras (Normal)
+                settingsPanel.classList.add('hidden', 'opacity-0');
+                header.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+                container.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+                
+                renderHeader();
+                renderCalendar();
+                renderNotebooks();
+            }
+            
             lucide.createIcons(); // Atualiza os ícones SVG
         }
 
@@ -228,7 +342,7 @@
             ];
 
             nav.innerHTML = categories.map(cat => `
-                <button onclick="window.setCategory('${cat.id}')" class="p-3 rounded-xl transition-all ${window.state.category === cat.id ? 'bg-white/10 text-white' : 'text-gray-500 hover:text-gray-300'}" title="${cat.id}">
+                <button onclick="window.setCategory('${cat.id}')" class="p-3 rounded-xl transition-all ${window.state.category === cat.id && !window.state.showSettings ? 'bg-white/10 text-white shadow-lg' : 'text-gray-500 hover:text-gray-300'}" title="${cat.id}">
                     <i data-lucide="${cat.icon}" width="22" height="22"></i>
                 </button>
             `).join('');
@@ -240,6 +354,13 @@
             } else {
                 btnPrivacy.className = 'p-3 rounded-xl transition-all text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20';
                 btnPrivacy.innerHTML = '<i data-lucide="shield-off" width="22" height="22"></i>';
+            }
+            
+            const btnSettings = document.getElementById('btn-settings');
+            if (window.state.showSettings) {
+                btnSettings.className = 'p-3 rounded-xl transition-all bg-white/10 text-white shadow-lg';
+            } else {
+                btnSettings.className = 'p-3 rounded-xl transition-all text-gray-500 hover:text-gray-300';
             }
         }
 
@@ -290,6 +411,7 @@
                     <div class="flex flex-col items-center justify-center h-full text-slate-600 mt-20">
                         <i data-lucide="search-x" width="64" height="64" class="mb-4 opacity-50"></i>
                         <p class="text-lg font-serif">Nenhuma caderneta encontrada.</p>
+                        <button onclick="window.toggleSettings()" class="mt-4 px-6 py-2 bg-white/5 hover:bg-white/10 rounded-full text-sm transition-colors">Gerar Dados de Teste nas Configurações</button>
                     </div>`;
                 return;
             }
@@ -463,6 +585,14 @@
 
         // --- FUNÇÕES DE INTERAÇÃO (Disponíveis globalmente) ---
         
+        window.toggleSettings = () => {
+            window.state.showSettings = !window.state.showSettings;
+            if(window.state.showSettings) {
+                window.state.category = 'Todas'; // Reset view for background
+            }
+            window.renderApp();
+        };
+
         window.scrollShelf = (shelfId, direction) => {
             const shelf = document.getElementById(shelfId);
             if (shelf) {
@@ -482,6 +612,7 @@
         }
 
         window.setCategory = (cat) => {
+            window.state.showSettings = false; // Fecha settings se clicar em categoria
             window.state.category = cat;
             window.renderApp();
         };
