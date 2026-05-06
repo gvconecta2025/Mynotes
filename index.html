@@ -47,21 +47,21 @@
 <body class="bg-[#0a0c10] text-gray-100 min-h-screen flex overflow-hidden selection:bg-slate-700">
 
     <!-- BARRA LATERAL -->
-    <aside class="w-20 bg-black/50 border-r border-white/5 flex flex-col items-center py-6 gap-8 flex-shrink-0 z-20">
-        <div class="w-12 h-12 bg-[#3E5A7A] rounded-xl flex items-center justify-center shadow-lg cursor-pointer text-xl font-bold font-serif text-white">
+    <aside class="w-24 bg-black/50 border-r border-white/5 flex flex-col items-center py-6 gap-8 flex-shrink-0 z-20">
+        <div class="w-14 h-14 bg-[#3E5A7A] rounded-xl flex items-center justify-center shadow-lg cursor-pointer text-xl font-bold font-serif text-white">
             MN
         </div>
         
-        <nav class="flex flex-col gap-4 w-full items-center" id="nav-categories">
+        <nav class="flex flex-col gap-3 w-full items-center" id="nav-categories">
             <!-- Botões injetados via JS -->
         </nav>
 
-        <div class="mt-auto flex flex-col gap-4 items-center">
-            <button onclick="window.togglePrivacy()" id="btn-privacy" class="p-3 rounded-xl transition-all text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20" title="Ativar Escudo de Privacidade">
-                <i data-lucide="shield-off" width="22" height="22"></i>
+        <div class="mt-auto flex flex-col gap-4 items-center w-full px-2">
+            <button onclick="window.togglePrivacy()" id="btn-privacy" class="flex flex-col items-center justify-center w-full h-14 rounded-xl transition-all text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20" title="Ativar Escudo de Privacidade">
+                <i data-lucide="shield-off" width="20" height="20"></i>
             </button>
-            <button onclick="window.toggleSettings()" id="btn-settings" class="p-3 text-gray-500 hover:text-gray-300 transition-all rounded-xl" title="Configurações Principais">
-                <i data-lucide="settings" width="22" height="22"></i>
+            <button onclick="window.toggleSettings()" id="btn-settings" class="flex flex-col items-center justify-center w-full h-14 text-gray-500 hover:text-gray-300 transition-all rounded-xl hover:bg-white/5" title="Configurações Principais">
+                <i data-lucide="settings" width="20" height="20"></i>
             </button>
         </div>
     </aside>
@@ -151,7 +151,7 @@
                     <div class="space-y-4 md:col-span-2 border-t border-white/10 pt-8 mt-4">
                         <h3 class="text-xl font-bold flex items-center gap-3 text-emerald-500"><i data-lucide="database"></i> Gestão de Dados & Prateleiras</h3>
                         <p class="text-sm text-slate-400 leading-relaxed max-w-2xl">
-                            Para testar o layout de "Prateleiras Estilo Netflix", pode gerar um conjunto de cadernetas fictícias predefinidas. Isto irá popular a sua base de dados com cadernos coloridos em diferentes categorias.
+                            Para testar o layout de "Prateleiras Estilo Netflix", pode gerar um conjunto de 10 cadernetas fictícias predefinidas. Isto irá popular a sua base de dados com cadernos coloridos em diferentes categorias.
                         </p>
                         <div class="flex gap-4 pt-4">
                             <button id="btn-generate-test" onclick="window.generateTestData()" class="bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 border border-emerald-500/30 px-6 py-3 rounded-xl text-sm font-bold tracking-wide transition-all flex items-center gap-2">
@@ -238,7 +238,7 @@
              });
         }
 
-        // --- GERAÇÃO DE DADOS DE TESTE (Para prateleiras) ---
+        // --- GERAÇÃO DE DADOS DE TESTE (10 Cadernetas Distintas) ---
         window.generateTestData = async () => {
              if(!window.state.userId) return;
              
@@ -252,26 +252,16 @@
              const dateStr = new Date().toLocaleDateString('pt-BR');
              
              const testNotebooks = [
-                // Categoria: Senhas
-                { title: 'Acessos & Senhas', subtitle: 'Criptografia Pessoal', date: dateStr, tags: ['segurança', 'root'], category: 'Senhas', color: 'bg-[#3E5A7A]', pages: ['Servidor Principal\nIP: 192.168.1.100\nUser: admin\nPass: *****'] },
-                { title: 'Redes Sociais', subtitle: 'Perfis Públicos', date: dateStr, tags: ['social', 'web'], category: 'Senhas', color: 'bg-[#8B4513]', pages: ['Twitter\nUser: mynotes_dev\n\nLinkedIn\nEmail: dev@mynotes.com'] },
-                { title: 'Bancos & Cartões', subtitle: 'Finanças', date: dateStr, tags: ['banco', 'privado'], category: 'Senhas', color: 'bg-[#191970]', pages: ['Conta Principal\nAgência: 0001\nConta: 123456-7'] },
-                { title: 'Emails', subtitle: 'Trabalho e Pessoal', date: dateStr, tags: ['email', 'contato'], category: 'Senhas', color: 'bg-[#483D8B]', pages: ['Gmail Pessoal\n...\n\nOutlook Trabalho\n...'] },
-                { title: 'Chaves de Software', subtitle: 'Licenças', date: dateStr, tags: ['keys', 'software'], category: 'Senhas', color: 'bg-[#2F4F4F]', pages: ['Windows 11 Pro\nXXXXX-XXXXX-XXXXX-XXXXX\n\nOffice 365\nYYYYY-YYYYY-YYYYY-YYYYY'] },
-                
-                // Categoria: Códigos
-                { title: 'Scripts Python', subtitle: 'Automação e Logs', date: dateStr, tags: ['dev', 'python'], category: 'Códigos', color: 'bg-[#2A363B]', pages: ['def backup_routine():\n    print("Iniciando backup...")\n    return True'] },
-                { title: 'Componentes React', subtitle: 'UI Kits', date: dateStr, tags: ['frontend', 'react'], category: 'Códigos', color: 'bg-[#008080]', pages: ['export default function Button({ text }) {\n  return <button>{text}</button>;\n}'] },
-                { title: 'Configurações Docker', subtitle: 'Infraestrutura', date: dateStr, tags: ['devops', 'docker'], category: 'Códigos', color: 'bg-[#4682B4]', pages: ['FROM node:18-alpine\nWORKDIR /app\nCOPY package.json .\nRUN npm install'] },
-                { title: 'Queries SQL', subtitle: 'Base de Dados', date: dateStr, tags: ['sql', 'db'], category: 'Códigos', color: 'bg-[#556B2F]', pages: ['SELECT * FROM users\nWHERE active = true\nORDER BY created_at DESC;'] },
-                { title: 'Snippets CSS', subtitle: 'Animações', date: dateStr, tags: ['css', 'design'], category: 'Códigos', color: 'bg-[#D2691E]', pages: ['.fade-in {\n  animation: fadeIn 0.3s ease-in;\n}\n@keyframes fadeIn {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}'] },
-                
-                // Categoria: Geral
-                { title: 'Diário de Ideias', subtitle: 'Brainstorming Mensal', date: dateStr, tags: ['pessoal', 'criativo'], category: 'Geral', color: 'bg-[#4A5D23]', pages: ['Nova arquitetura visual para o projeto.\n\nFoco na memória espacial.'] },
-                { title: 'Lista de Compras', subtitle: 'Casa & Essenciais', date: dateStr, tags: ['casa', 'mercado'], category: 'Geral', color: 'bg-[#CD5C5C]', pages: ['- Café em grão\n- Leite de aveia\n- Pão de massa mãe\n- Maçãs'] },
-                { title: 'Viagem 2026', subtitle: 'Planeamento', date: dateStr, tags: ['férias', 'viagem'], category: 'Geral', color: 'bg-[#8FBC8F]', pages: ['Voo: Reservado para dia 15.\nHotel: Confirmar check-in.\nRoteiro: Dia 1 - Museu...'] },
-                { title: 'Metas do Ano', subtitle: 'Objetivos Pessoais', date: dateStr, tags: ['metas', 'foco'], category: 'Geral', color: 'bg-[#6B8E23]', pages: ['1. Lançar o MyNotes.\n2. Ler 12 livros.\n3. Aprender Rust.'] },
-                { title: 'Reuniões Semanais', subtitle: 'Atas e Notas', date: dateStr, tags: ['trabalho', 'atas'], category: 'Geral', color: 'bg-[#BDB76B]', pages: ['Reunião de Alinhamento - 10/05\n- Discutir nova feature de prateleiras.\n- Ajustar bugs do Firebase.'] }
+                { title: 'Acessos AWS', subtitle: 'Cloud Infraestrutura', date: dateStr, tags: ['aws', 'root'], category: 'Senhas', color: 'bg-[#b85a1c]', pages: ['Login AWS\nURL: aws.amazon.com\nUser: admin\nPass: **********'] },
+                { title: 'Home Banking', subtitle: 'Dados Pessoais', date: dateStr, tags: ['banco', 'finanças'], category: 'Senhas', color: 'bg-[#1e3a5f]', pages: ['NIB: 0000 0000 0000 0000\nPIN: ****\n\nCartão de Crédito:\nNum: 1234 5678 9101 1121\nCVC: ***'] },
+                { title: 'Componentes React', subtitle: 'UI Library', date: dateStr, tags: ['frontend', 'react'], category: 'Códigos', color: 'bg-[#0f5c5c]', pages: ['export function Button({ children }) {\n  return (\n    <button className="btn-primary">\n      {children}\n    </button>\n  );\n}'] },
+                { title: 'Scripts Python', subtitle: 'Data Science', date: dateStr, tags: ['python', 'dados'], category: 'Códigos', color: 'bg-[#3b4129]', pages: ['import pandas as pd\n\ndf = pd.read_csv("data.csv")\nprint(df.head())\n\n# Filtrar dados\nativos = df[df["status"] == "ativo"]'] },
+                { title: 'Física Quântica', subtitle: 'Resumos Semestre 1', date: dateStr, tags: ['universidade', 'física'], category: 'Estudos', color: 'bg-[#402a4d]', pages: ['A dualidade onda-partícula afirma que luz e matéria exibem propriedades tanto de ondas quanto de partículas.\n\nEquação de Schrödinger...'] },
+                { title: 'Inglês B2', subtitle: 'Vocabulário', date: dateStr, tags: ['línguas', 'inglês'], category: 'Estudos', color: 'bg-[#5f2e2e]', pages: ['To grasp = compreender, agarrar\nTo endeavor = esforçar-se\nTo mitigate = mitigar, atenuar\n\nExpressões úteis:\n"Out of the blue" - De repente'] },
+                { title: 'Diário de Bordo', subtitle: 'Reflexões e Hábitos', date: dateStr, tags: ['diário', 'vida'], category: 'Pessoal', color: 'bg-[#2a4d3e]', pages: ['Hoje foi um dia incrivelmente produtivo. Consegui implementar as novas funcionalidades no sistema de notas.\n\nAmanhã o foco será otimizar a performance.'] },
+                { title: 'Receitas da Avó', subtitle: 'Doces e Salgados', date: dateStr, tags: ['culinária', 'casa'], category: 'Pessoal', color: 'bg-[#996a2e]', pages: ['Bolo de Cenoura\n\nIngredientes:\n- 3 cenouras\n- 2 chávenas de açúcar\n- 1/2 chávena de óleo\n- 4 ovos\n- 2 chávenas de farinha\n\nPreparação: ...'] },
+                { title: 'Viagem ao Japão', subtitle: 'Roteiro 2026', date: dateStr, tags: ['viagem', 'férias'], category: 'Pessoal', color: 'bg-[#732a3f]', pages: ['Dia 1: Chegada a Tóquio (Narita). Fazer check-in no hotel em Shinjuku.\n\nDia 2: Visita a Quioto. Apanhar o Shinkansen de manhã cedo.\n\nDia 3: Osaka...'] },
+                { title: 'Ideias de App', subtitle: 'Brainstorming', date: dateStr, tags: ['projetos', 'ideias'], category: 'Pessoal', color: 'bg-[#465a6e]', pages: ['MyNotes - App de anotações tátil\n\n- Usar cadernos virtuais.\n- Firebase para sincronização.\n- Cada categoria tem a sua própria prateleira.\n- Suporte para tags e modo de privacidade.'] }
             ];
 
             const appId = typeof __app_id !== 'undefined' ? __app_id : 'mynotes-app';
@@ -290,7 +280,7 @@
                  lucide.createIcons();
             }
             
-            // Fecha o painel de configurações para ver o resultado após 1 segundo
+            // Fecha o painel de configurações para ver o resultado após 1.5 segundos
             setTimeout(() => {
                 window.toggleSettings();
                 if(btn) { // Reset button state for future
@@ -299,7 +289,7 @@
                     btn.classList.replace('text-white', 'text-emerald-400');
                     btn.classList.replace('bg-emerald-500', 'bg-emerald-600/20');
                 }
-            }, 1000);
+            }, 1500);
         }
 
 
@@ -312,14 +302,11 @@
             const settingsPanel = document.getElementById('settings-panel');
 
             if (window.state.showSettings) {
-                // Modo Painel de Configurações
                 header.classList.add('opacity-0', 'pointer-events-none', 'hidden');
                 container.classList.add('opacity-0', 'pointer-events-none', 'hidden');
                 settingsPanel.classList.remove('hidden');
-                // Pequeno delay para a animação de entrada
                 setTimeout(() => settingsPanel.classList.remove('opacity-0'), 10);
             } else {
-                // Modo Prateleiras (Normal)
                 settingsPanel.classList.add('hidden', 'opacity-0');
                 header.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
                 container.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
@@ -335,32 +322,34 @@
         function renderSidebar() {
             const nav = document.getElementById('nav-categories');
             const categories = [
-                { id: 'Todas', icon: 'folder' },
-                { id: 'Senhas', icon: 'key' },
-                { id: 'Códigos', icon: 'code-2' },
-                { id: 'Geral', icon: 'layout-grid' }
+                { id: 'Todas', icon: 'folder-open', name: 'Todas' },
+                { id: 'Senhas', icon: 'key', name: 'Senhas' },
+                { id: 'Códigos', icon: 'code-2', name: 'Códigos' },
+                { id: 'Estudos', icon: 'book-open', name: 'Estudos' },
+                { id: 'Pessoal', icon: 'user', name: 'Pessoal' }
             ];
 
             nav.innerHTML = categories.map(cat => `
-                <button onclick="window.setCategory('${cat.id}')" class="p-3 rounded-xl transition-all ${window.state.category === cat.id && !window.state.showSettings ? 'bg-white/10 text-white shadow-lg' : 'text-gray-500 hover:text-gray-300'}" title="${cat.id}">
+                <button onclick="window.setCategory('${cat.id}')" class="flex flex-col items-center justify-center w-[72px] py-3 rounded-xl transition-all ${window.state.category === cat.id && !window.state.showSettings ? 'bg-white/10 text-white shadow-lg' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}" title="${cat.id}">
                     <i data-lucide="${cat.icon}" width="22" height="22"></i>
+                    <span class="text-[9px] font-bold uppercase tracking-wider mt-2">${cat.name}</span>
                 </button>
             `).join('');
 
             const btnPrivacy = document.getElementById('btn-privacy');
             if (window.state.privacyMode) {
-                btnPrivacy.className = 'p-3 rounded-xl transition-all bg-red-500/20 text-red-400';
+                btnPrivacy.className = 'flex flex-col items-center justify-center w-[72px] py-3 rounded-xl transition-all bg-red-500/20 text-red-400';
                 btnPrivacy.innerHTML = '<i data-lucide="shield" width="22" height="22"></i>';
             } else {
-                btnPrivacy.className = 'p-3 rounded-xl transition-all text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20';
+                btnPrivacy.className = 'flex flex-col items-center justify-center w-[72px] py-3 rounded-xl transition-all text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20';
                 btnPrivacy.innerHTML = '<i data-lucide="shield-off" width="22" height="22"></i>';
             }
             
             const btnSettings = document.getElementById('btn-settings');
             if (window.state.showSettings) {
-                btnSettings.className = 'p-3 rounded-xl transition-all bg-white/10 text-white shadow-lg';
+                btnSettings.className = 'flex flex-col items-center justify-center w-[72px] py-3 rounded-xl transition-all bg-white/10 text-white shadow-lg';
             } else {
-                btnSettings.className = 'p-3 rounded-xl transition-all text-gray-500 hover:text-gray-300';
+                btnSettings.className = 'flex flex-col items-center justify-center w-[72px] py-3 text-gray-500 hover:text-gray-300 transition-all rounded-xl hover:bg-white/5';
             }
         }
 
@@ -385,24 +374,183 @@
             }
         }
 
+        // Helper para gerar o HTML do cartão (reutilizável)
+        function generateNotebookHTML(note) {
+            const totalPages = note.pages ? note.pages.length : 1;
+            const content = (note.pages && note.pages[note.currentPage]) ? note.pages[note.currentPage] : '';
+            const spiralsHtml = Array(20).fill().map(() => `<div class="h-2 w-full bg-gradient-to-b from-gray-300 via-white to-gray-500 rounded-full border border-gray-600 shadow-md"></div>`).join('');
+
+            let html = `<div class="relative w-80 h-[460px] flex-shrink-0 transition-transform duration-300 hover:scale-[1.02] snap-start">`;
+            
+            if (!note.isOpen) {
+                html += `
+                        <div class="absolute -left-3 top-0 bottom-0 w-6 flex flex-col justify-evenly py-4 z-20 pointer-events-none">${spiralsHtml}</div>
+                        
+                        <div onclick="window.openNote('${note.id}')" class="w-full h-full ${note.color} rounded-r-2xl shadow-2xl border-l-2 border-black/30 cursor-pointer relative overflow-hidden flex justify-end group/card">
+                            <div class="absolute left-[12%] top-20 w-5 h-40 bg-amber-200 rounded-full shadow-[4px_4px_10px_rgba(0,0,0,0.4)] border border-black/20 flex flex-col items-center">
+                                <div class="w-full h-6 bg-gradient-to-b from-gray-300 to-gray-400 rounded-t-full border-b border-gray-500"></div>
+                            </div>
+
+                            <div class="w-[65%] h-full bg-[#fdfbf7] shadow-[-10px_0_20px_rgba(0,0,0,0.15)] flex flex-col items-center py-10 px-4 text-center z-10 transition-colors group-hover/card:bg-white text-slate-800">
+                                <i data-lucide="leaf" class="text-emerald-700 mb-6 opacity-80" width="36" height="36" stroke-width="1.5"></i>
+                                <h2 class="text-xl font-serif font-bold uppercase tracking-widest leading-snug border-b-2 border-slate-200 pb-3 w-full mb-3">${note.title}</h2>
+                                <p class="text-slate-500 text-[11px] uppercase tracking-widest font-semibold">${note.subtitle}</p>
+                                <div class="mt-auto w-full">
+                                    <p class="text-slate-400 text-[9px] mb-3 uppercase">Criado em ${note.date}</p>
+                                    <div class="flex flex-wrap justify-center gap-1.5">
+                                        ${(note.tags||[]).map(tag => `<span class="text-[9px] bg-slate-100 text-slate-600 px-2 py-1 rounded border border-slate-200 uppercase tracking-wider">#${tag}</span>`).join('')}
+                                    </div>
+                                </div>
+                                <i data-lucide="pen-tool" class="absolute bottom-5 text-slate-300" width="14" height="14"></i>
+                            </div>
+                        </div>
+                `;
+            } else {
+                let interiorContent = '';
+                
+                if (note.isEditing) {
+                    const tagsString = (note.tags || []).join(', ');
+                    interiorContent = `
+                        <div class="flex-1 p-6 flex flex-col gap-4 overflow-y-auto text-slate-700 bg-[#fdfbf7] custom-scroll">
+                            <h3 class="text-sm font-bold uppercase tracking-widest border-b border-slate-200 pb-2">Detalhes da Capa</h3>
+                            
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Título</label>
+                                <input type="text" value="${note.title}" onblur="window.updateNoteMeta('${note.id}', 'title', this.value)" class="w-full bg-white border border-slate-300 rounded p-2 text-sm outline-none focus:border-[#3E5A7A]">
+                            </div>
+                            
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Subtítulo</label>
+                                <input type="text" value="${note.subtitle}" onblur="window.updateNoteMeta('${note.id}', 'subtitle', this.value)" class="w-full bg-white border border-slate-300 rounded p-2 text-sm outline-none focus:border-[#3E5A7A]">
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Categoria</label>
+                                <select onchange="window.updateNoteMeta('${note.id}', 'category', this.value)" class="w-full bg-white border border-slate-300 rounded p-2 text-sm outline-none focus:border-[#3E5A7A]">
+                                    <option value="Geral" ${note.category === 'Geral' ? 'selected' : ''}>Geral</option>
+                                    <option value="Senhas" ${note.category === 'Senhas' ? 'selected' : ''}>Senhas</option>
+                                    <option value="Códigos" ${note.category === 'Códigos' ? 'selected' : ''}>Códigos</option>
+                                    <option value="Estudos" ${note.category === 'Estudos' ? 'selected' : ''}>Estudos</option>
+                                    <option value="Pessoal" ${note.category === 'Pessoal' ? 'selected' : ''}>Pessoal</option>
+                                </select>
+                            </div>
+
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Tags (separadas por vírgula)</label>
+                                <input type="text" value="${tagsString}" onblur="window.updateNoteMeta('${note.id}', 'tags', this.value)" placeholder="ex: python, dev, log" class="w-full bg-white border border-slate-300 rounded p-2 text-sm outline-none focus:border-[#3E5A7A]">
+                            </div>
+
+                            <button onclick="window.toggleEditNote('${note.id}')" class="mt-2 bg-slate-800 text-white font-bold text-xs uppercase tracking-widest py-3 rounded hover:bg-slate-700 transition-colors">Voltar para Páginas</button>
+                        </div>
+                    `;
+                } else {
+                    interiorContent = `
+                        <div class="flex-1 relative">
+                            <textarea 
+                                oninput="window.updateNoteData('${note.id}', this.value)"
+                                onblur="window.saveNoteData('${note.id}')"
+                                class="w-full h-full bg-transparent resize-none outline-none p-5 text-slate-800 font-sans leading-[32px] lines-bg ${window.state.privacyMode ? 'blur-md select-none pointer-events-none' : ''}"
+                                style="padding-left: 40px;" spellcheck="false" placeholder="Comece a escrever nesta página em branco..."
+                            >${content}</textarea>
+                            <div class="absolute left-8 top-0 bottom-0 w-px bg-red-300/60 pointer-events-none"></div>
+                        </div>
+                    `;
+                }
+
+                html += `
+                        <div class="absolute -left-3 top-0 bottom-0 w-6 flex flex-col justify-evenly py-4 z-20 pointer-events-none">${spiralsHtml}</div>
+                        
+                        <div class="w-full h-full bg-[#fdfbf7] rounded-r-2xl shadow-2xl border-l border-gray-300 flex flex-col">
+                            <div class="flex justify-between items-center p-3 border-b border-red-200 bg-[#fdfbf7] rounded-tr-2xl">
+                                <span class="text-xs font-serif text-gray-500 font-semibold truncate text-slate-800 flex-1 px-1">${note.title}</span>
+                                <div class="flex gap-1.5 items-center">
+                                    <button onclick="window.toggleEditNote('${note.id}')" class="p-1.5 bg-slate-100 text-slate-500 hover:bg-slate-200 rounded-md transition-colors" title="Configurações da Capa">
+                                        <i data-lucide="settings-2" width="14" height="14"></i>
+                                    </button>
+                                    <button onclick="window.deleteNotebook('${note.id}')" class="p-1.5 bg-red-50 text-red-500 hover:bg-red-100 rounded-md transition-colors" title="Apagar Caderneta">
+                                        <i data-lucide="trash-2" width="14" height="14"></i>
+                                    </button>
+                                    <button onclick="window.closeNote('${note.id}')" class="text-[10px] bg-slate-200 text-slate-600 hover:bg-slate-300 font-bold px-3 py-1.5 rounded-full uppercase tracking-wider transition-colors ml-1">Fechar</button>
+                                </div>
+                            </div>
+
+                            ${interiorContent}
+
+                            <div class="h-12 border-t border-gray-200 flex justify-between items-center px-3 bg-slate-50 rounded-br-2xl text-slate-500">
+                                <div class="flex gap-1 items-center w-1/3">
+                                    <button onclick="window.changePage('${note.id}', -1)" ${note.currentPage === 0 || note.isEditing ? 'disabled' : ''} class="p-1.5 hover:bg-slate-200 rounded-md disabled:opacity-30 transition-colors cursor-pointer disabled:cursor-not-allowed">
+                                        <i data-lucide="chevron-left" width="16" height="16"></i>
+                                    </button>
+                                    <button onclick="window.changePage('${note.id}', 1)" ${note.currentPage >= totalPages - 1 || note.isEditing ? 'disabled' : ''} class="p-1.5 hover:bg-slate-200 rounded-md disabled:opacity-30 transition-colors cursor-pointer disabled:cursor-not-allowed">
+                                        <i data-lucide="chevron-right" width="16" height="16"></i>
+                                    </button>
+                                </div>
+                                <span class="text-[10px] font-bold tracking-widest uppercase text-slate-800 w-1/3 text-center ${note.isEditing ? 'opacity-30' : ''}">Pág ${note.currentPage + 1} / ${totalPages}</span>
+                                <div class="flex gap-1 items-center w-1/3 justify-end">
+                                    <button onclick="window.addPage('${note.id}')" ${note.isEditing ? 'disabled' : ''} class="p-1.5 hover:bg-emerald-100 text-emerald-600 rounded-md disabled:opacity-30 transition-colors" title="Adicionar Página">
+                                        <i data-lucide="file-plus-2" width="16" height="16"></i>
+                                    </button>
+                                    <button onclick="window.deletePage('${note.id}')" ${note.isEditing ? 'disabled' : ''} class="p-1.5 hover:bg-red-100 text-red-500 rounded-md disabled:opacity-30 transition-colors" title="Arrancar Página Atual">
+                                        <i data-lucide="file-minus-2" width="16" height="16"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                `;
+            }
+            html += `</div>`;
+            return html;
+        }
+
         function renderNotebooks() {
             const container = document.getElementById('notebooks-container');
             const filtered = getFilteredNotes();
             
-            // Agrupar por categorias
+            // Modo: TODAS AS CADERNETAS (Grelha com scroll vertical)
+            if (window.state.category === 'Todas') {
+                if (filtered.length === 0) {
+                    container.innerHTML = `
+                        <div class="flex flex-col items-center justify-center h-full text-slate-600 mt-20">
+                            <i data-lucide="search-x" width="64" height="64" class="mb-4 opacity-50"></i>
+                            <p class="text-lg font-serif">Nenhuma caderneta encontrada.</p>
+                            <button onclick="window.toggleSettings()" class="mt-4 px-6 py-2 bg-white/5 hover:bg-white/10 rounded-full text-sm transition-colors">Gerar Dados de Teste nas Configurações</button>
+                        </div>`;
+                    return;
+                }
+
+                let html = `
+                    <div class="px-12 mb-8 border-l-4 border-[#3E5A7A] ml-12">
+                        <h2 class="text-2xl font-serif text-white tracking-wide">Todas as Cadernetas</h2>
+                        <span class="text-slate-600 text-xs font-bold tracking-widest uppercase">${filtered.length} Cadernetas</span>
+                    </div>
+                    <div class="flex flex-wrap gap-10 px-12 pb-12 ml-12 lg:ml-8 justify-start">
+                `;
+                
+                filtered.forEach(note => {
+                    html += generateNotebookHTML(note);
+                });
+
+                html += `
+                        <div onclick="window.createNewNote('Geral')" class="w-80 h-[460px] flex-shrink-0 border-2 border-dashed border-white/10 rounded-r-2xl flex flex-col items-center justify-center text-gray-600 hover:bg-white/5 hover:border-white/20 hover:text-gray-400 transition-all cursor-pointer">
+                            <i data-lucide="plus" width="40" height="40" class="mb-4 text-[#3E5A7A]"></i>
+                            <span class="text-xs font-bold uppercase tracking-widest text-center px-4">Nova Caderneta<br/><span class="text-[10px] text-gray-600 opacity-60">Geral</span></span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML = html;
+                return;
+            }
+
+            // Modo: PRATELEIRAS ESPECÍFICAS (Carrossel Horizontal Estilo Netflix)
             const grouped = filtered.reduce((acc, note) => {
                 if(!acc[note.category]) acc[note.category] = [];
                 acc[note.category].push(note);
                 return acc;
             }, {});
 
-            // Garantir que a categoria ativa tenha uma prateleira, mesmo vazia (se não estivermos a pesquisar)
             if (window.state.search === '') {
-                if (window.state.category !== 'Todas' && !grouped[window.state.category]) {
+                if (!grouped[window.state.category]) {
                     grouped[window.state.category] = [];
-                }
-                if (window.state.category === 'Todas' && Object.keys(grouped).length === 0) {
-                    grouped['Geral'] = []; // Prateleira default
                 }
             }
 
@@ -410,8 +558,7 @@
                 container.innerHTML = `
                     <div class="flex flex-col items-center justify-center h-full text-slate-600 mt-20">
                         <i data-lucide="search-x" width="64" height="64" class="mb-4 opacity-50"></i>
-                        <p class="text-lg font-serif">Nenhuma caderneta encontrada.</p>
-                        <button onclick="window.toggleSettings()" class="mt-4 px-6 py-2 bg-white/5 hover:bg-white/10 rounded-full text-sm transition-colors">Gerar Dados de Teste nas Configurações</button>
+                        <p class="text-lg font-serif">Nenhuma caderneta encontrada nesta categoria.</p>
                     </div>`;
                 return;
             }
@@ -439,128 +586,7 @@
                 `;
 
                 notes.forEach(note => {
-                    const totalPages = note.pages ? note.pages.length : 1;
-                    const content = (note.pages && note.pages[note.currentPage]) ? note.pages[note.currentPage] : '';
-                    const spiralsHtml = Array(20).fill().map(() => `<div class="h-2 w-full bg-gradient-to-b from-gray-300 via-white to-gray-500 rounded-full border border-gray-600 shadow-md"></div>`).join('');
-
-                    // O Wrapper agora tem snap-start para alinhar certinho no scroll
-                    html += `<div class="relative w-80 h-[460px] flex-shrink-0 transition-transform duration-300 hover:scale-[1.02] snap-start">`;
-                    
-                    if (!note.isOpen) {
-                        html += `
-                                <div class="absolute -left-3 top-0 bottom-0 w-6 flex flex-col justify-evenly py-4 z-20 pointer-events-none">${spiralsHtml}</div>
-                                
-                                <div onclick="window.openNote('${note.id}')" class="w-full h-full ${note.color} rounded-r-2xl shadow-2xl border-l-2 border-black/30 cursor-pointer relative overflow-hidden flex justify-end group/card">
-                                    <div class="absolute left-[12%] top-20 w-5 h-40 bg-amber-200 rounded-full shadow-[4px_4px_10px_rgba(0,0,0,0.4)] border border-black/20 flex flex-col items-center">
-                                        <div class="w-full h-6 bg-gradient-to-b from-gray-300 to-gray-400 rounded-t-full border-b border-gray-500"></div>
-                                    </div>
-
-                                    <div class="w-[65%] h-full bg-[#fdfbf7] shadow-[-10px_0_20px_rgba(0,0,0,0.15)] flex flex-col items-center py-10 px-4 text-center z-10 transition-colors group-hover/card:bg-white text-slate-800">
-                                        <i data-lucide="leaf" class="text-emerald-700 mb-6 opacity-80" width="36" height="36" stroke-width="1.5"></i>
-                                        <h2 class="text-xl font-serif font-bold uppercase tracking-widest leading-snug border-b-2 border-slate-200 pb-3 w-full mb-3">${note.title}</h2>
-                                        <p class="text-slate-500 text-[11px] uppercase tracking-widest font-semibold">${note.subtitle}</p>
-                                        <div class="mt-auto w-full">
-                                            <p class="text-slate-400 text-[9px] mb-3 uppercase">Criado em ${note.date}</p>
-                                            <div class="flex flex-wrap justify-center gap-1.5">
-                                                ${(note.tags||[]).map(tag => `<span class="text-[9px] bg-slate-100 text-slate-600 px-2 py-1 rounded border border-slate-200 uppercase tracking-wider">#${tag}</span>`).join('')}
-                                            </div>
-                                        </div>
-                                        <i data-lucide="pen-tool" class="absolute bottom-5 text-slate-300" width="14" height="14"></i>
-                                    </div>
-                                </div>
-                        `;
-                    } else {
-                        let interiorContent = '';
-                        
-                        if (note.isEditing) {
-                            const tagsString = (note.tags || []).join(', ');
-                            interiorContent = `
-                                <div class="flex-1 p-6 flex flex-col gap-4 overflow-y-auto text-slate-700 bg-[#fdfbf7] custom-scroll">
-                                    <h3 class="text-sm font-bold uppercase tracking-widest border-b border-slate-200 pb-2">Detalhes da Capa</h3>
-                                    
-                                    <div class="flex flex-col gap-1">
-                                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Título</label>
-                                        <input type="text" value="${note.title}" onblur="window.updateNoteMeta('${note.id}', 'title', this.value)" class="w-full bg-white border border-slate-300 rounded p-2 text-sm outline-none focus:border-[#3E5A7A]">
-                                    </div>
-                                    
-                                    <div class="flex flex-col gap-1">
-                                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Subtítulo</label>
-                                        <input type="text" value="${note.subtitle}" onblur="window.updateNoteMeta('${note.id}', 'subtitle', this.value)" class="w-full bg-white border border-slate-300 rounded p-2 text-sm outline-none focus:border-[#3E5A7A]">
-                                    </div>
-
-                                    <div class="flex flex-col gap-1">
-                                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Categoria</label>
-                                        <select onchange="window.updateNoteMeta('${note.id}', 'category', this.value)" class="w-full bg-white border border-slate-300 rounded p-2 text-sm outline-none focus:border-[#3E5A7A]">
-                                            <option value="Geral" ${note.category === 'Geral' ? 'selected' : ''}>Geral</option>
-                                            <option value="Senhas" ${note.category === 'Senhas' ? 'selected' : ''}>Senhas</option>
-                                            <option value="Códigos" ${note.category === 'Códigos' ? 'selected' : ''}>Códigos</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="flex flex-col gap-1">
-                                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Tags (separadas por vírgula)</label>
-                                        <input type="text" value="${tagsString}" onblur="window.updateNoteMeta('${note.id}', 'tags', this.value)" placeholder="ex: python, dev, log" class="w-full bg-white border border-slate-300 rounded p-2 text-sm outline-none focus:border-[#3E5A7A]">
-                                    </div>
-
-                                    <button onclick="window.toggleEditNote('${note.id}')" class="mt-2 bg-slate-800 text-white font-bold text-xs uppercase tracking-widest py-3 rounded hover:bg-slate-700 transition-colors">Voltar para Páginas</button>
-                                </div>
-                            `;
-                        } else {
-                            interiorContent = `
-                                <div class="flex-1 relative">
-                                    <textarea 
-                                        oninput="window.updateNoteData('${note.id}', this.value)"
-                                        onblur="window.saveNoteData('${note.id}')"
-                                        class="w-full h-full bg-transparent resize-none outline-none p-5 text-slate-800 font-sans leading-[32px] lines-bg ${window.state.privacyMode ? 'blur-md select-none pointer-events-none' : ''}"
-                                        style="padding-left: 40px;" spellcheck="false" placeholder="Comece a escrever nesta página em branco..."
-                                    >${content}</textarea>
-                                    <div class="absolute left-8 top-0 bottom-0 w-px bg-red-300/60 pointer-events-none"></div>
-                                </div>
-                            `;
-                        }
-
-                        html += `
-                                <div class="absolute -left-3 top-0 bottom-0 w-6 flex flex-col justify-evenly py-4 z-20 pointer-events-none">${spiralsHtml}</div>
-                                
-                                <div class="w-full h-full bg-[#fdfbf7] rounded-r-2xl shadow-2xl border-l border-gray-300 flex flex-col">
-                                    <div class="flex justify-between items-center p-3 border-b border-red-200 bg-[#fdfbf7] rounded-tr-2xl">
-                                        <span class="text-xs font-serif text-gray-500 font-semibold truncate text-slate-800 flex-1 px-1">${note.title}</span>
-                                        <div class="flex gap-1.5 items-center">
-                                            <button onclick="window.toggleEditNote('${note.id}')" class="p-1.5 bg-slate-100 text-slate-500 hover:bg-slate-200 rounded-md transition-colors" title="Configurações da Capa">
-                                                <i data-lucide="settings-2" width="14" height="14"></i>
-                                            </button>
-                                            <button onclick="window.deleteNotebook('${note.id}')" class="p-1.5 bg-red-50 text-red-500 hover:bg-red-100 rounded-md transition-colors" title="Apagar Caderneta">
-                                                <i data-lucide="trash-2" width="14" height="14"></i>
-                                            </button>
-                                            <button onclick="window.closeNote('${note.id}')" class="text-[10px] bg-slate-200 text-slate-600 hover:bg-slate-300 font-bold px-3 py-1.5 rounded-full uppercase tracking-wider transition-colors ml-1">Fechar</button>
-                                        </div>
-                                    </div>
-
-                                    ${interiorContent}
-
-                                    <div class="h-12 border-t border-gray-200 flex justify-between items-center px-3 bg-slate-50 rounded-br-2xl text-slate-500">
-                                        <div class="flex gap-1 items-center w-1/3">
-                                            <button onclick="window.changePage('${note.id}', -1)" ${note.currentPage === 0 || note.isEditing ? 'disabled' : ''} class="p-1.5 hover:bg-slate-200 rounded-md disabled:opacity-30 transition-colors cursor-pointer disabled:cursor-not-allowed">
-                                                <i data-lucide="chevron-left" width="16" height="16"></i>
-                                            </button>
-                                            <button onclick="window.changePage('${note.id}', 1)" ${note.currentPage >= totalPages - 1 || note.isEditing ? 'disabled' : ''} class="p-1.5 hover:bg-slate-200 rounded-md disabled:opacity-30 transition-colors cursor-pointer disabled:cursor-not-allowed">
-                                                <i data-lucide="chevron-right" width="16" height="16"></i>
-                                            </button>
-                                        </div>
-                                        <span class="text-[10px] font-bold tracking-widest uppercase text-slate-800 w-1/3 text-center ${note.isEditing ? 'opacity-30' : ''}">Pág ${note.currentPage + 1} / ${totalPages}</span>
-                                        <div class="flex gap-1 items-center w-1/3 justify-end">
-                                            <button onclick="window.addPage('${note.id}')" ${note.isEditing ? 'disabled' : ''} class="p-1.5 hover:bg-emerald-100 text-emerald-600 rounded-md disabled:opacity-30 transition-colors" title="Adicionar Página">
-                                                <i data-lucide="file-plus-2" width="16" height="16"></i>
-                                            </button>
-                                            <button onclick="window.deletePage('${note.id}')" ${note.isEditing ? 'disabled' : ''} class="p-1.5 hover:bg-red-100 text-red-500 rounded-md disabled:opacity-30 transition-colors" title="Arrancar Página Atual">
-                                                <i data-lucide="file-minus-2" width="16" height="16"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                        `;
-                    }
-                    html += `</div>`; // Fecho do wrapper da note
+                    html += generateNotebookHTML(note);
                 });
 
                 // Adiciona o botão "Criar Nova Caderneta" específico para esta prateleira
