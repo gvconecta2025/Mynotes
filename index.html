@@ -73,16 +73,38 @@
             <p class="text-slate-400 text-sm tracking-wide mb-8">O seu espaço de memória seguro.</p>
             
             <form onsubmit="window.performLogin(event)" class="w-full flex flex-col gap-4">
+                
+                <button type="button" onclick="window.performGoogleLogin()" class="w-full flex items-center justify-center gap-3 bg-white text-gray-800 font-bold py-3 rounded-xl transition-all hover:bg-gray-200 shadow-md">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Entrar com o Google
+                </button>
+
+                <div class="flex items-center gap-3 my-1">
+                    <div class="h-px bg-white/10 flex-1"></div>
+                    <span class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Ou Email</span>
+                    <div class="h-px bg-white/10 flex-1"></div>
+                </div>
+
                 <div>
                     <label class="text-[10px] uppercase tracking-widest text-slate-500 font-bold ml-2">Email</label>
                     <input type="email" id="login-email" required placeholder="seu@email.com" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-sm text-gray-200 outline-none focus:border-[#3E5A7A] transition-colors mt-1" value="admin@mynotes.com">
                 </div>
                 <div>
                     <label class="text-[10px] uppercase tracking-widest text-slate-500 font-bold ml-2">Senha</label>
-                    <input type="password" id="login-pass" required placeholder="••••••••" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-sm text-gray-200 outline-none focus:border-[#3E5A7A] transition-colors mt-1" value="password123">
+                    <div class="relative mt-1">
+                        <input type="password" id="login-pass" required placeholder="••••••••" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 pr-12 text-sm text-gray-200 outline-none focus:border-[#3E5A7A] transition-colors" value="password123">
+                        <button type="button" onclick="window.togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors">
+                            <i data-lucide="eye" id="eye-icon" width="16" height="16"></i>
+                        </button>
+                    </div>
                 </div>
                 <button type="submit" class="mt-4 w-full bg-[#3E5A7A] hover:bg-[#2b4058] text-white font-bold py-3 rounded-xl transition-all shadow-lg hover:shadow-[#3E5A7A]/30">
-                    Entrar na Conta
+                    Entrar com Email
                 </button>
             </form>
         </div>
@@ -92,18 +114,18 @@
     <aside class="w-24 h-full overflow-y-auto hide-scrollbar bg-black/50 border-r border-white/5 flex flex-col items-center py-6 gap-6 flex-shrink-0 z-20">
         
         <!-- Minha Conta -->
-        <div class="relative group cursor-pointer flex flex-col items-center shrink-0">
+        <div class="relative flex flex-col items-center shrink-0">
             <button onclick="window.toggleUserMenu()" class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center border-2 border-[#3E5A7A] shadow-lg hover:scale-110 transition-transform">
                 <i data-lucide="user" class="text-white" width="20" height="20"></i>
             </button>
             <span class="text-[9px] font-bold uppercase tracking-wider mt-2 text-slate-400">Conta</span>
             
             <!-- Dropdown da Conta -->
-            <div id="user-dropdown" class="hidden absolute top-14 left-16 bg-[#0a0c10] border border-white/10 rounded-xl shadow-2xl p-4 w-48 z-50">
-                <p class="text-xs text-slate-400 mb-1">Logado como:</p>
+            <div id="user-dropdown" class="hidden absolute top-14 left-16 bg-[#0a0c10] border border-white/10 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] p-4 w-56 z-[200] opacity-0 scale-95 transition-all duration-200 origin-top-left">
+                <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-1">Logado como:</p>
                 <p class="text-sm font-bold text-white mb-4 truncate" id="display-user-email">admin@mynotes.com</p>
                 <div class="h-px w-full bg-white/10 mb-2"></div>
-                <button onclick="window.performLogout()" class="w-full flex items-center gap-2 text-red-400 hover:bg-red-500/10 p-2 rounded-lg transition-colors text-sm font-bold">
+                <button onclick="window.performLogout()" class="w-full flex items-center gap-2 text-red-400 hover:bg-red-500/10 hover:text-red-300 p-2.5 rounded-lg transition-colors text-sm font-bold">
                     <i data-lucide="log-out" width="16" height="16"></i> Sair da Conta
                 </button>
             </div>
@@ -148,7 +170,7 @@
                     <span class="text-xs font-bold uppercase tracking-widest hidden md:inline">Travado</span>
                 </button>
 
-                <div class="relative group">
+                <div class="relative group z-30">
                     <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
                         <i data-lucide="search" width="16" height="16"></i>
                     </div>
@@ -162,15 +184,15 @@
                 </div>
 
                 <!-- Botão de Toggle do Calendário -->
-                <button onclick="window.toggleCalendar()" class="bg-[#3E5A7A] border border-transparent rounded-xl w-[42px] h-[42px] flex items-center justify-center text-white hover:bg-[#2b4058] transition-colors shadow-lg">
+                <button onclick="window.toggleCalendar()" id="btn-calendar" class="bg-[#3E5A7A] border border-transparent rounded-xl w-[42px] h-[42px] flex items-center justify-center text-white hover:bg-[#2b4058] transition-colors shadow-lg z-40 relative">
                     <i data-lucide="calendar" width="18" height="18"></i>
                 </button>
 
                 <!-- Calendário Widget Recolhível -->
-                <div id="calendar-widget" class="absolute top-[60px] right-0 bg-[#0a0c10]/95 backdrop-blur-xl border border-[#3E5A7A]/30 p-5 rounded-2xl w-72 shadow-[0_10px_30px_rgba(0,0,0,0.8)] transition-all duration-300 transform origin-top-right scale-95 opacity-0 pointer-events-none z-50">
+                <div id="calendar-widget" class="absolute top-[60px] right-0 bg-[#0a0c10]/95 backdrop-blur-xl border border-[#3E5A7A]/30 p-5 rounded-2xl w-72 shadow-[0_10px_40px_rgba(0,0,0,0.9)] transition-all duration-300 transform origin-top-right scale-95 opacity-0 pointer-events-none z-[150]">
                     <div class="flex justify-between items-center mb-4">
                         <button onclick="window.changeMonth(-1)" class="p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded"><i data-lucide="chevron-left" width="16" height="16"></i></button>
-                        <h3 id="calendar-month-year" class="text-[10px] uppercase tracking-widest text-[#3E5A7A] text-center font-bold">Maio 2026</h3>
+                        <h3 id="calendar-month-year" class="text-[10px] uppercase tracking-widest text-[#3E5A7A] text-center font-bold">A carregar</h3>
                         <button onclick="window.changeMonth(1)" class="p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded"><i data-lucide="chevron-right" width="16" height="16"></i></button>
                     </div>
                     <div class="grid grid-cols-7 gap-y-3 gap-x-1 text-[11px] text-center font-medium">
@@ -194,8 +216,7 @@
         </section>
 
         <!-- PAINEL DE CONFIGURAÇÕES (Oculto por defeito) -->
-        <section id="settings-panel" class="hidden absolute inset-0 bg-[#0a0c10]/95 backdrop-blur-xl z-30 overflow-y-auto p-12">
-            <!-- Mesmo código das definições... -->
+        <section id="settings-panel" class="hidden absolute inset-0 bg-[#0a0c10]/95 backdrop-blur-xl z-[90] overflow-y-auto p-12">
             <div class="max-w-4xl mx-auto bg-white/5 border border-white/10 rounded-3xl p-12 shadow-2xl mt-10">
                 <div class="flex justify-between items-center mb-10 border-b border-white/10 pb-6">
                     <div>
@@ -222,12 +243,21 @@
                     <div class="space-y-4 md:col-span-2 border-t border-white/10 pt-8 mt-4">
                         <h3 class="text-xl font-bold flex items-center gap-3 text-emerald-500"><i data-lucide="database"></i> Gestão de Dados & Prateleiras</h3>
                         <p class="text-sm text-slate-400 leading-relaxed max-w-2xl">
-                            Para testar o layout de "Prateleiras Estilo Netflix", pode gerar um conjunto de 10 cadernetas fictícias predefinidas. Isto irá popular a sua base de dados com cadernos coloridos em diferentes categorias.
+                            Para testar o layout de "Prateleiras", pode gerar cadernetas fictícias predefinidas. Também dispõe das opções avançadas de eliminação para limpar a sua estante.
                         </p>
-                        <div class="flex gap-4 pt-4">
-                            <button id="btn-generate-test" onclick="window.generateTestData()" class="bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 border border-emerald-500/30 px-6 py-3 rounded-xl text-sm font-bold tracking-wide transition-all flex items-center gap-2">
+                        <div class="flex flex-col gap-4 pt-4">
+                            <button id="btn-generate-test" onclick="window.generateTestData()" class="bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 border border-emerald-500/30 px-6 py-3 rounded-xl text-sm font-bold tracking-wide transition-all flex items-center gap-2 w-max">
                                 <i data-lucide="sparkles" width="18" height="18"></i> Gerar Cadernetas de Teste
                             </button>
+                            
+                            <div class="flex gap-4 pt-4 border-t border-white/5">
+                                <button id="btn-del-test" onclick="window.handleDeleteTest()" class="bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 border border-orange-500/20 px-6 py-3 rounded-xl text-sm font-bold tracking-wide transition-all flex items-center gap-2">
+                                    <i data-lucide="trash-2" width="18" height="18"></i> Apagar Cadernetas de Teste
+                                </button>
+                                <button id="btn-del-all" onclick="window.handleDeleteAll()" class="bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 px-6 py-3 rounded-xl text-sm font-bold tracking-wide transition-all flex items-center gap-2">
+                                    <i data-lucide="alert-octagon" width="18" height="18"></i> Apagar TODAS as Cadernetas
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -265,17 +295,19 @@
             showSettings: false,
             calendarOpen: false,
             globalShowLines: true,
-            isGlobalEditMode: false, // NOVO: Modo edição de capas global
-            expandedNoteId: null,    // NOVO: ID da caderneta maximizada
-            calendarDate: new Date(),// NOVO: Estado para mês atual do calendário
-            isAuthenticated: false,  // NOVO: Controle de Login
+            isGlobalEditMode: false, 
+            expandedNoteId: null,    
+            calendarDate: new Date(),
+            isAuthenticated: false,  
             userId: null,
-            userEmail: 'admin@mynotes.com'
+            userEmail: 'admin@mynotes.com',
+            deleteTestStage: 0,
+            deleteAllStage: 0
         };
 
         let unsubscribeSnapshot = null;
 
-        // Regra do Sistema: O Auth Anónimo é chamado em segundo plano por questões de segurança de infraestrutura do sandbox
+        // Regra do Sistema
         const initSystemAuth = async () => {
             try { await signInAnonymously(auth); } catch(e) { console.error(e); }
         };
@@ -318,6 +350,27 @@
         }
 
         // --- LOGIN E CONTA ---
+        window.togglePasswordVisibility = () => {
+            const input = document.getElementById('login-pass');
+            const icon = document.getElementById('eye-icon');
+            if(input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        };
+
+        window.performGoogleLogin = () => {
+            window.state.userEmail = 'google.user@gmail.com';
+            window.state.isAuthenticated = true;
+            document.getElementById('display-user-email').innerText = window.state.userEmail;
+            document.getElementById('login-screen').classList.add('opacity-0', 'pointer-events-none');
+            if(window.state.userId) loadNotebooks();
+        };
+
         window.performLogin = (e) => {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
@@ -336,16 +389,99 @@
             window.state.notebooks = [];
             const loginScreen = document.getElementById('login-screen');
             loginScreen.classList.remove('opacity-0', 'pointer-events-none');
-            window.toggleUserMenu(true); // fechar menu
+            window.toggleUserMenu(true); 
+            window.state.calendarOpen = false;
+            window.renderCalendarWidget();
         };
 
         window.toggleUserMenu = (forceClose = false) => {
             const dropdown = document.getElementById('user-dropdown');
             if(forceClose || !dropdown.classList.contains('hidden')) {
-                dropdown.classList.add('hidden');
+                dropdown.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => dropdown.classList.add('hidden'), 200);
             } else {
                 dropdown.classList.remove('hidden');
+                setTimeout(() => dropdown.classList.remove('opacity-0', 'scale-95'), 10);
             }
+        };
+
+        // Fechar Dropdown da Conta e Calendario clicando fora
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('user-dropdown');
+            const userBtn = dropdown.previousElementSibling;
+            if(!dropdown.classList.contains('hidden') && !dropdown.contains(e.target) && !userBtn.contains(e.target)){
+                window.toggleUserMenu(true);
+            }
+
+            const calendarWidget = document.getElementById('calendar-widget');
+            const calendarBtn = document.getElementById('btn-calendar');
+            if(window.state.calendarOpen && !calendarWidget.contains(e.target) && !calendarBtn.contains(e.target)){
+                window.state.calendarOpen = false;
+                window.renderCalendarWidget();
+            }
+        });
+
+        // --- DELEÇÃO AVANÇADA (CONFIGURAÇÕES) ---
+        window.handleDeleteTest = async () => {
+            const btn = document.getElementById('btn-del-test');
+            if(window.state.deleteTestStage === 0) {
+                window.state.deleteTestStage = 1;
+                btn.innerHTML = '<i data-lucide="alert-triangle" width="18" height="18"></i> Tem certeza? (Clique para confirmar)';
+                btn.classList.replace('text-orange-400', 'text-red-400');
+                btn.classList.replace('bg-orange-500/10', 'bg-red-500/20');
+                lucide.createIcons();
+            } else {
+                btn.innerHTML = '<i data-lucide="loader-2" class="animate-spin w-4 h-4"></i> A apagar...';
+                const testNotes = window.state.notebooks.filter(n => n.isTest);
+                for(let n of testNotes) {
+                    await window.deleteNotebookSilently(n.id);
+                }
+                window.state.deleteTestStage = 0;
+                btn.innerHTML = '<i data-lucide="check" width="18" height="18"></i> Testes Apagados';
+                setTimeout(() => {
+                    btn.innerHTML = '<i data-lucide="trash-2" width="18" height="18"></i> Apagar Cadernetas de Teste';
+                    btn.classList.replace('text-red-400', 'text-orange-400');
+                    btn.classList.replace('bg-red-500/20', 'bg-orange-500/10');
+                    lucide.createIcons();
+                }, 2000);
+            }
+        };
+
+        window.handleDeleteAll = async () => {
+            const btn = document.getElementById('btn-del-all');
+            if(window.state.deleteAllStage === 0) {
+                window.state.deleteAllStage = 1;
+                btn.innerHTML = '<i data-lucide="alert-triangle" width="18" height="18"></i> Tem certeza absoluta?';
+                btn.classList.replace('bg-red-500/10', 'bg-red-600/30');
+                lucide.createIcons();
+            } else if (window.state.deleteAllStage === 1) {
+                window.state.deleteAllStage = 2;
+                btn.innerHTML = '<i data-lucide="skull" width="18" height="18"></i> ÚLTIMO AVISO: Apagar TUDO?';
+                btn.classList.replace('bg-red-600/30', 'bg-red-800/80');
+                btn.classList.replace('text-red-400', 'text-white');
+                lucide.createIcons();
+            } else {
+                btn.innerHTML = '<i data-lucide="loader-2" class="animate-spin w-4 h-4"></i> A dizimar...';
+                for(let n of window.state.notebooks) {
+                    await window.deleteNotebookSilently(n.id);
+                }
+                window.state.deleteAllStage = 0;
+                btn.innerHTML = '<i data-lucide="check" width="18" height="18"></i> Tudo Apagado';
+                setTimeout(() => {
+                    btn.innerHTML = '<i data-lucide="alert-octagon" width="18" height="18"></i> Apagar TODAS as Cadernetas';
+                    btn.classList.replace('bg-red-800/80', 'bg-red-500/10');
+                    btn.classList.replace('text-white', 'text-red-400');
+                    lucide.createIcons();
+                }, 2000);
+            }
+        };
+
+        window.deleteNotebookSilently = async (id) => {
+             if (window.state.userId) {
+                 const appId = typeof __app_id !== 'undefined' ? __app_id : 'mynotes-app';
+                 const noteRef = doc(db, 'artifacts', appId, 'users', window.state.userId, 'notebooks', id);
+                 try { await deleteDoc(noteRef); } catch(e) {}
+             }
         };
 
         // --- GERAÇÃO DE DADOS DE TESTE ---
@@ -357,16 +493,16 @@
 
              const dateStr = new Date().toLocaleDateString('pt-BR');
              const testNotebooks = [
-                { title: 'Acessos AWS', subtitle: 'Cloud Infraestrutura', date: dateStr, tags: ['aws', 'root'], category: 'Senhas', color: 'bg-[#b85a1c]', showLines: true, pages: ['Login AWS\nURL: aws.amazon.com\nUser: admin\nPass: **********'] },
-                { title: 'Home Banking', subtitle: 'Dados Pessoais', date: dateStr, tags: ['banco', 'finanças'], category: 'Senhas', color: 'bg-[#1e3a5f]', showLines: true, pages: ['NIB: 0000 0000 0000 0000\nPIN: ****\n\nCartão de Crédito:\nNum: 1234 5678 9101 1121\nCVC: ***'] },
-                { title: 'Componentes React', subtitle: 'UI Library', date: dateStr, tags: ['frontend', 'react'], category: 'Códigos', color: 'bg-[#0f5c5c]', showLines: true, pages: ['export function Button({ children }) {\n  return (\n    <button className="btn-primary">\n      {children}\n    </button>\n  );\n}'] },
-                { title: 'Scripts Python', subtitle: 'Data Science', date: dateStr, tags: ['python', 'dados'], category: 'Códigos', color: 'bg-[#3b4129]', showLines: true, pages: ['import pandas as pd\n\ndf = pd.read_csv("data.csv")\nprint(df.head())\n\n# Filtrar dados\nativos = df[df["status"] == "ativo"]'] },
-                { title: 'Física Quântica', subtitle: 'Resumos Semestre 1', date: dateStr, tags: ['universidade', 'física'], category: 'Estudos', color: 'bg-[#402a4d]', showLines: true, pages: ['A dualidade onda-partícula afirma que luz e matéria exibem propriedades tanto de ondas quanto de partículas.\n\nEquação de Schrödinger...'] },
-                { title: 'Inglês B2', subtitle: 'Vocabulário', date: dateStr, tags: ['línguas', 'inglês'], category: 'Estudos', color: 'bg-[#5f2e2e]', showLines: true, pages: ['To grasp = compreender, agarrar\nTo endeavor = esforçar-se\nTo mitigate = mitigar, atenuar\n\nExpressões úteis:\n"Out of the blue" - De repente'] },
-                { title: 'Diário de Bordo', subtitle: 'Reflexões e Hábitos', date: dateStr, tags: ['diário', 'vida'], category: 'Pessoal', color: 'bg-[#2a4d3e]', showLines: true, pages: ['Hoje foi um dia incrivelmente produtivo. Consegui implementar as novas funcionalidades no sistema de notas.\n\nAmanhã o foco será otimizar a performance.'] },
-                { title: 'Receitas da Avó', subtitle: 'Doces e Salgados', date: dateStr, tags: ['culinária', 'casa'], category: 'Pessoal', color: 'bg-[#996a2e]', showLines: true, pages: ['Bolo de Cenoura\n\nIngredientes:\n- 3 cenouras\n- 2 chávenas de açúcar\n- 1/2 chávena de óleo\n- 4 ovos\n- 2 chávenas de farinha\n\nPreparação: ...'] },
-                { title: 'Viagem ao Japão', subtitle: 'Roteiro 2026', date: dateStr, tags: ['viagem', 'férias'], category: 'Pessoal', color: 'bg-[#732a3f]', showLines: true, pages: ['Dia 1: Chegada a Tóquio (Narita). Fazer check-in no hotel em Shinjuku.\n\nDia 2: Visita a Quioto. Apanhar o Shinkansen de manhã cedo.\n\nDia 3: Osaka...'] },
-                { title: 'Ideias de App', subtitle: 'Brainstorming', date: dateStr, tags: ['projetos', 'ideias'], category: 'Geral', color: 'bg-[#465a6e]', showLines: true, pages: ['MyNotes - App de anotações tátil\n\n- Usar cadernos virtuais.\n- Firebase para sincronização.\n- Cada categoria tem a sua própria prateleira.\n- Suporte para tags e modo de privacidade.'] }
+                { title: 'Acessos AWS', subtitle: 'Cloud Infraestrutura', date: dateStr, tags: ['aws', 'root'], category: 'Senhas', color: 'bg-[#b85a1c]', showLines: true, isTest: true, pages: ['Login AWS\nURL: aws.amazon.com\nUser: admin\nPass: **********'] },
+                { title: 'Home Banking', subtitle: 'Dados Pessoais', date: dateStr, tags: ['banco', 'finanças'], category: 'Senhas', color: 'bg-[#1e3a5f]', showLines: true, isTest: true, pages: ['NIB: 0000 0000 0000 0000\nPIN: ****\n\nCartão de Crédito:\nNum: 1234 5678 9101 1121\nCVC: ***'] },
+                { title: 'Componentes React', subtitle: 'UI Library', date: dateStr, tags: ['frontend', 'react'], category: 'Códigos', color: 'bg-[#0f5c5c]', showLines: true, isTest: true, pages: ['export function Button({ children }) {\n  return (\n    <button className="btn-primary">\n      {children}\n    </button>\n  );\n}'] },
+                { title: 'Scripts Python', subtitle: 'Data Science', date: dateStr, tags: ['python', 'dados'], category: 'Códigos', color: 'bg-[#3b4129]', showLines: true, isTest: true, pages: ['import pandas as pd\n\ndf = pd.read_csv("data.csv")\nprint(df.head())\n\n# Filtrar dados\nativos = df[df["status"] == "ativo"]'] },
+                { title: 'Física Quântica', subtitle: 'Resumos Semestre 1', date: dateStr, tags: ['universidade', 'física'], category: 'Estudos', color: 'bg-[#402a4d]', showLines: true, isTest: true, pages: ['A dualidade onda-partícula afirma que luz e matéria exibem propriedades tanto de ondas quanto de partículas.\n\nEquação de Schrödinger...'] },
+                { title: 'Inglês B2', subtitle: 'Vocabulário', date: dateStr, tags: ['línguas', 'inglês'], category: 'Estudos', color: 'bg-[#5f2e2e]', showLines: true, isTest: true, pages: ['To grasp = compreender, agarrar\nTo endeavor = esforçar-se\nTo mitigate = mitigar, atenuar\n\nExpressões úteis:\n"Out of the blue" - De repente'] },
+                { title: 'Diário de Bordo', subtitle: 'Reflexões e Hábitos', date: dateStr, tags: ['diário', 'vida'], category: 'Pessoal', color: 'bg-[#2a4d3e]', showLines: true, isTest: true, pages: ['Hoje foi um dia incrivelmente produtivo. Consegui implementar as novas funcionalidades no sistema de notas.\n\nAmanhã o foco será otimizar a performance.'] },
+                { title: 'Receitas da Avó', subtitle: 'Doces e Salgados', date: dateStr, tags: ['culinária', 'casa'], category: 'Pessoal', color: 'bg-[#996a2e]', showLines: true, isTest: true, pages: ['Bolo de Cenoura\n\nIngredientes:\n- 3 cenouras\n- 2 chávenas de açúcar\n- 1/2 chávena de óleo\n- 4 ovos\n- 2 chávenas de farinha\n\nPreparação: ...'] },
+                { title: 'Viagem ao Japão', subtitle: 'Roteiro 2026', date: dateStr, tags: ['viagem', 'férias'], category: 'Pessoal', color: 'bg-[#732a3f]', showLines: true, isTest: true, pages: ['Dia 1: Chegada a Tóquio (Narita). Fazer check-in no hotel em Shinjuku.\n\nDia 2: Visita a Quioto. Apanhar o Shinkansen de manhã cedo.\n\nDia 3: Osaka...'] },
+                { title: 'Ideias de App', subtitle: 'Brainstorming', date: dateStr, tags: ['projetos', 'ideias'], category: 'Geral', color: 'bg-[#465a6e]', showLines: true, isTest: true, pages: ['MyNotes - App de anotações tátil\n\n- Usar cadernos virtuais.\n- Firebase para sincronização.\n- Cada categoria tem a sua própria prateleira.\n- Suporte para tags e modo de privacidade.'] }
             ];
 
             const appId = typeof __app_id !== 'undefined' ? __app_id : 'mynotes-app';
@@ -781,13 +917,23 @@
 
         window.toggleSettings = () => {
             window.state.showSettings = !window.state.showSettings;
-            if(window.state.showSettings) { window.state.category = 'Todas'; }
+            if(window.state.showSettings) { 
+                window.state.category = 'Todas';
+                // Reseta estágios de apagar
+                window.state.deleteTestStage = 0;
+                window.state.deleteAllStage = 0; 
+            }
             window.renderApp();
         };
         
         window.toggleGlobalLines = () => {
             window.state.globalShowLines = !window.state.globalShowLines;
             window.renderApp();
+        };
+
+        window.toggleCalendar = () => {
+            window.state.calendarOpen = !window.state.calendarOpen;
+            window.renderCalendarWidget();
         };
 
         window.scrollToCategory = (catId) => {
