@@ -105,18 +105,32 @@
 
     <!-- BARRA LATERAL -->
     <aside class="w-24 h-full bg-black/50 border-r border-white/5 flex flex-col items-center py-6 gap-6 flex-shrink-0 z-[500]">
+        <!-- Minha Conta -->
         <div class="relative flex flex-col items-center shrink-0 w-full px-2">
             <button onclick="window.toggleUserMenu(event)" id="account-btn" class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center border-2 border-[#3E5A7A] shadow-lg hover:scale-110 transition-transform cursor-pointer relative z-[600]">
                 <i data-lucide="user" class="text-white" width="20" height="20"></i>
             </button>
             <span class="text-[9px] font-bold uppercase tracking-wider mt-2 text-slate-400">Conta</span>
-            <div id="user-dropdown" class="hidden absolute top-0 left-20 bg-[#0a0c10] border border-white/10 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] p-4 w-56 z-[700] opacity-0 scale-95 transition-all duration-200 origin-left">
-                <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-1">Perfil</p>
-                <p class="text-sm font-bold text-white mb-4 truncate" id="display-user-email">...</p>
-                <div class="h-px w-full bg-white/10 mb-2"></div>
-                <button onclick="window.performLogout()" class="w-full flex items-center gap-2 text-red-400 hover:bg-red-500/10 p-2.5 rounded-lg text-sm font-bold"><i data-lucide="log-out" width="16"></i> Sair</button>
+            
+            <!-- Dropdown da Conta (Sobreposto) -->
+            <div id="user-dropdown" class="hidden absolute top-2 left-24 bg-[#0a0c10] border border-[#3E5A7A]/30 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] p-5 w-64 z-[999] opacity-0 scale-95 transition-all duration-200 origin-left backdrop-blur-2xl">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-[#3E5A7A]/20 rounded-full flex items-center justify-center">
+                        <i data-lucide="user" class="text-[#3E5A7A]" width="18"></i>
+                    </div>
+                    <div class="overflow-hidden">
+                        <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Perfil Ativo</p>
+                        <p class="text-sm font-bold text-white truncate" id="display-user-email">...</p>
+                    </div>
+                </div>
+                <div class="h-px w-full bg-white/5 mb-3"></div>
+                <button onclick="window.performLogout()" class="w-full flex items-center gap-3 text-red-400 hover:bg-red-500/10 p-3 rounded-xl transition-all text-sm font-bold group">
+                    <i data-lucide="log-out" width="16" class="group-hover:-translate-x-1 transition-transform"></i> 
+                    Sair da Conta
+                </button>
             </div>
         </div>
+
         <div class="w-10 h-px bg-white/10 my-2 shrink-0"></div>
         <nav class="flex flex-col gap-3 w-full items-center shrink-0" id="nav-categories"></nav>
         <div class="mt-auto flex flex-col gap-4 items-center w-full px-2 shrink-0 pt-6">
@@ -180,7 +194,7 @@
         </section>
     </main>
 
-    <!-- PLAYER DE VÍDEO (Modal flutuante discreto) -->
+    <!-- PLAYER DE VÍDEO -->
     <div id="video-preview-modal" class="hidden fixed bottom-10 right-10 z-[3000] w-[320px] bg-[#0a0c10] border border-white/10 rounded-2xl shadow-2xl overflow-hidden transition-all scale-95 opacity-0">
         <div class="bg-white/5 p-2 flex justify-between items-center border-b border-white/10">
             <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-2">Video Preview</span>
@@ -239,6 +253,9 @@
         }
 
         // --- CORE FUNCTIONS ---
+        // Função para normalizar strings (remover acentos para busca)
+        const normalize = (s) => (s || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
         window.performLogin = (e) => {
             e.preventDefault();
             window.state.userEmail = document.getElementById('login-email').value;
@@ -264,9 +281,11 @@
             if(e) e.stopPropagation();
             const d = document.getElementById('user-dropdown');
             if(fc || !d.classList.contains('hidden')) {
-                d.classList.add('opacity-0', 'scale-95'); setTimeout(() => d.classList.add('hidden'), 200);
+                d.classList.add('opacity-0', 'scale-95'); 
+                setTimeout(() => d.classList.add('hidden'), 200);
             } else {
-                d.classList.remove('hidden'); setTimeout(() => d.classList.remove('opacity-0', 'scale-95'), 10);
+                d.classList.remove('hidden'); 
+                setTimeout(() => d.classList.remove('opacity-0', 'scale-95'), 10);
             }
         };
 
@@ -327,7 +346,7 @@
             if(!note.isOpen) {
                 return `
                     <div class="relative w-80 h-[460px] flex-shrink-0 snap-start transition-all duration-300 hover:scale-[1.05]">
-                        <div class="absolute -left-3 top-0 bottom-0 w-6 flex flex-col justify-evenly z-20 pointer-events-none">${spirals}</div>
+                        <div class="absolute -left-3 top-0 bottom-0 w-6 flex flex-col justify-evenly py-4 z-20 pointer-events-none">${spirals}</div>
                         <div onclick="window.openNote('${note.id}')" class="w-full h-full ${note.color} rounded-r-2xl shadow-2xl border-l-2 border-black/30 cursor-pointer relative overflow-hidden flex justify-end">
                             <div class="absolute top-4 right-4 text-white/40 font-bold text-[10px]">${noteNumber}</div>
                             <div class="w-[65%] h-full bg-[#fdfbf7] shadow-[-10px_0_20px_rgba(0,0,0,0.2)] flex flex-col items-center py-10 px-4 text-center z-10 transition-colors group-hover:bg-white text-slate-800">
@@ -396,8 +415,9 @@
             const container = document.getElementById('notebooks-container');
             const cats = ['Senhas','Códigos','Estudos','Pessoal','Geral'];
             const filtered = window.state.notebooks.filter(n => {
-                const t = window.state.search.toLowerCase();
-                return n.title.toLowerCase().includes(t) || (n.subtitle||'').toLowerCase().includes(t);
+                const term = normalize(window.state.search);
+                if (!term) return true;
+                return normalize(n.title).includes(term) || normalize(n.subtitle).includes(term);
             });
             let html = '';
             cats.forEach(cName => {
@@ -433,7 +453,7 @@
         window.togglePrivacy = () => { window.state.privacyMode = !window.state.privacyMode; window.renderApp(); };
         window.updateSearch = (v) => { window.state.search = v; window.renderApp(); };
         window.toggleCalendar = (e) => { if(e) e.stopPropagation(); window.state.calendarOpen = !window.state.calendarOpen; window.renderCalendarWidget(); };
-        window.updateNoteData = (id, t) => { const n = window.state.notebooks.find(x => x.id === id); if(n) n.pages[n.currentPage] = t; };
+        window.updateNoteData = (id, t) => { const n = window.state.notebooks.find(n => n.id === id); if(n) n.pages[n.currentPage] = t; };
         
         window.saveNoteData = async (id) => {
             const n = window.state.notebooks.find(x => x.id === id);
@@ -505,11 +525,39 @@
             lucide.createIcons();
         };
 
+        // Fechar dropdowns ao clicar fora
         document.addEventListener('click', (e) => {
-            const userBtn = document.getElementById('account-btn');
-            const userDrop = document.getElementById('user-dropdown');
-            if(userBtn && !userBtn.contains(e.target) && !userDrop.contains(e.target)) window.toggleUserMenu(null, true);
+            const accountBtn = document.getElementById('account-btn');
+            const dropdown = document.getElementById('user-dropdown');
+            if(accountBtn && !accountBtn.contains(e.target) && !dropdown.contains(e.target)) {
+                window.toggleUserMenu(null, true);
+            }
+            
+            const calBtn = document.getElementById('btn-calendar');
+            const calWidget = document.getElementById('calendar-widget');
+            if(calBtn && !calBtn.contains(e.target) && !calWidget.contains(e.target)) {
+                window.state.calendarOpen = false;
+                window.renderCalendarWidget();
+            }
         });
+
+        window.renderSidebar = () => {
+            const categories = [
+                { id: 'Todas', icon: 'folder-open', name: 'Todas' },
+                { id: 'Senhas', icon: 'key', name: 'Senhas' },
+                { id: 'Códigos', icon: 'code-2', name: 'Códigos' },
+                { id: 'Estudos', icon: 'book-open', name: 'Estudos' },
+                { id: 'Pessoal', icon: 'user', name: 'Pessoal' },
+                { id: 'Geral', icon: 'layout-grid', name: 'Geral' }
+            ];
+            document.getElementById('nav-categories').innerHTML = categories.map(cat => `
+                <button onclick="window.scrollToCategory('${cat.id}')" class="flex flex-col items-center justify-center w-[72px] py-3 rounded-xl transition-all ${window.state.category === cat.id ? 'bg-white/10 text-white' : 'text-gray-500 hover:text-white hover:bg-white/5'}">
+                    <i data-lucide="${cat.icon}" width="22"></i>
+                    <span class="text-[9px] font-bold uppercase tracking-wider mt-2">${cat.name}</span>
+                </button>
+            `).join('');
+            lucide.createIcons();
+        };
 
     </script>
 </body>
