@@ -3,165 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyNotes - Webapp</title>
+    <title>MyNotes - Webapp Profissional</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; background-color: #0a0c10; }
         .font-serif { font-family: 'Merriweather', serif; }
         
         .lines-bg {
             background-image: linear-gradient(transparent 31px, #e5e7eb 32px);
             background-size: 100% 32px;
         }
-        
-        /* Scrollbars customizadas */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
-
-        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.1); }
-        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.2); }
 
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* Editor Styles */
-        .editor-content { min-height: 100%; outline: none; }
-        .editor-content a { color: #3E5A7A; text-decoration: underline; cursor: pointer; }
+        /* Animação da Engrenagem do Cadeado */
+        @keyframes rotate-gear {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .spin-gear { animation: rotate-gear 3s linear infinite; }
 
-        .editable-input {
-            background: rgba(255,255,255,0.8);
-            border: 1px dashed #3E5A7A;
-            border-radius: 4px;
-            padding: 2px 4px;
-            color: #1e293b;
-            width: 100%;
-            text-align: center;
+        /* Estilo para inputs de edição de títulos */
+        .shelf-title-edit {
+            background: transparent;
+            border-bottom: 2px dashed #3E5A7A;
             outline: none;
-            transition: all 0.2s;
+            color: white;
+            width: auto;
         }
 
-        .emoji-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+        .editor-content { min-height: 100%; outline: none; }
+        
+        /* Botão de Adição Universal */
+        #universal-add {
+            box-shadow: 0 10px 25px rgba(62, 90, 122, 0.5);
+        }
 
-        /* Overlay do Dropdown de Conta */
+        /* Dropdown da Conta */
         #user-dropdown {
             box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.9);
-            border: 1px solid rgba(62, 90, 122, 0.5);
-            backdrop-filter: blur(24px);
-        }
-
-        /* Seletor de Contas Google */
-        #google-selector-modal {
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(10px);
+            z-index: 1000;
         }
     </style>
 </head>
-<body class="bg-[#0a0c10] text-gray-100 h-screen flex overflow-hidden selection:bg-slate-700">
+<body class="text-gray-100 h-screen flex overflow-hidden">
 
     <!-- ECRÃ DE LOGIN -->
-    <div id="login-screen" class="fixed inset-0 z-[1000] flex items-center justify-center bg-[#0a0c10] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-800/40 via-[#0a0c10] to-[#0a0c10] transition-opacity duration-500">
-        <div class="bg-white/5 border border-white/10 p-10 rounded-3xl backdrop-blur-xl shadow-2xl w-[400px] flex flex-col items-center transform transition-transform duration-500">
-            <div class="w-20 h-20 bg-[#3E5A7A] rounded-2xl flex items-center justify-center shadow-lg text-4xl font-bold font-serif text-white mb-6">
-                MN
-            </div>
-            <h1 class="text-3xl font-light tracking-tight text-white mb-2">My<span class="font-bold text-[#3E5A7A] font-serif">Notes</span></h1>
-            <p class="text-slate-400 text-sm tracking-wide mb-8">Escrita criativa e organizada.</p>
+    <div id="login-screen" class="fixed inset-0 z-[2000] flex items-center justify-center bg-[#0a0c10] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-800/40 via-[#0a0c10] to-[#0a0c10]">
+        <div class="bg-white/5 border border-white/10 p-10 rounded-3xl backdrop-blur-xl shadow-2xl w-[400px] flex flex-col items-center">
+            <div class="w-20 h-20 bg-[#3E5A7A] rounded-2xl flex items-center justify-center shadow-lg text-4xl font-bold font-serif text-white mb-6">MN</div>
+            <h1 class="text-3xl font-light text-white mb-2">My<span class="font-bold text-[#3E5A7A] font-serif">Notes</span></h1>
+            <p class="text-slate-400 text-sm mb-8">Escrita criativa e organizada.</p>
             
             <form onsubmit="window.performLogin(event)" class="w-full flex flex-col gap-4">
-                <button type="button" onclick="window.showGoogleSelector()" class="w-full flex items-center justify-center gap-3 bg-white text-gray-800 font-bold py-3 rounded-xl transition-all hover:bg-gray-200 shadow-md active:scale-95">
+                <button type="button" onclick="window.showGoogleSelector()" class="w-full flex items-center justify-center gap-3 bg-white text-gray-800 font-bold py-3 rounded-xl hover:bg-gray-200 transition-all active:scale-95 shadow-md">
                     <svg class="w-5 h-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
                     Entrar com o Google
                 </button>
                 <div class="flex items-center gap-3 my-1">
                     <div class="h-px bg-white/10 flex-1"></div>
-                    <span class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Ou Email</span>
+                    <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Ou Email</span>
                     <div class="h-px bg-white/10 flex-1"></div>
                 </div>
-                <input type="email" id="login-email" required placeholder="Digite o seu e-mail" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-sm text-gray-200 outline-none focus:border-[#3E5A7A] transition-colors">
+                <input type="email" id="login-email" required placeholder="Digite o seu e-mail" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-sm text-gray-200 outline-none focus:border-[#3E5A7A]">
                 <div class="relative">
-                    <input type="password" id="login-pass" required placeholder="Senha" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-sm text-gray-200 outline-none focus:border-[#3E5A7A] transition-colors">
+                    <input type="password" id="login-pass" required placeholder="Senha" class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-sm text-gray-200 outline-none focus:border-[#3E5A7A]">
                     <button type="button" onclick="window.togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white"><i data-lucide="eye" id="eye-icon" width="16"></i></button>
                 </div>
-                <button type="submit" class="mt-4 w-full bg-[#3E5A7A] hover:bg-[#2b4058] text-white font-bold py-3 rounded-xl shadow-lg transition-all active:scale-95">Entrar</button>
+                <button type="submit" class="mt-2 w-full bg-[#3E5A7A] hover:bg-[#2b4058] text-white font-bold py-3 rounded-xl shadow-lg transition-all active:scale-95">Entrar</button>
             </form>
         </div>
     </div>
 
-    <!-- SELETOR DE CONTAS GOOGLE (MODAL) -->
-    <div id="google-selector-modal" class="hidden fixed inset-0 z-[2000] flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl transform transition-all scale-100">
+    <!-- SELETOR DE CONTAS GOOGLE -->
+    <div id="google-selector-modal" class="hidden fixed inset-0 z-[3000] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
             <div class="p-6 text-center border-b">
-                <div class="flex justify-center mb-4">
-                    <svg class="w-10 h-10" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-                </div>
                 <h2 class="text-xl font-bold text-gray-900">Escolha uma conta</h2>
                 <p class="text-sm text-gray-500">para entrar em MyNotes</p>
             </div>
             <div id="google-accounts-list" class="max-h-[300px] overflow-y-auto bg-gray-50">
-                <!-- Contas dinâmicas injetadas aqui -->
+                <!-- Contas dinâmicas -->
             </div>
             <div class="p-4 bg-white border-t flex flex-col gap-2">
                 <button onclick="window.useNewGoogleAccount()" class="w-full text-left p-3 hover:bg-gray-100 rounded-xl transition-colors flex items-center gap-3 text-sm font-medium text-gray-700">
-                    <i data-lucide="user-plus" width="18"></i> Utilizar outra conta
+                    <i data-lucide="user-plus" width="18"></i> Outra conta
                 </button>
-                <button onclick="window.hideGoogleSelector()" class="w-full p-2 text-xs text-gray-400 font-bold uppercase tracking-widest hover:text-gray-600">Cancelar</button>
+                <button onclick="window.hideGoogleSelector()" class="w-full p-2 text-xs text-gray-400 font-bold uppercase hover:text-gray-600">Cancelar</button>
             </div>
         </div>
     </div>
 
     <!-- BARRA LATERAL -->
     <aside class="w-24 h-full bg-black/50 border-r border-white/5 flex flex-col items-center py-6 shrink-0 z-[500] overflow-visible">
-        <!-- Minha Conta -->
         <div class="relative flex flex-col items-center shrink-0 w-full px-2 mb-4 overflow-visible">
-            <button onclick="window.toggleUserMenu(event)" id="account-btn" class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center border-2 border-[#3E5A7A] shadow-lg hover:scale-110 transition-transform cursor-pointer relative z-[600]">
-                <i data-lucide="user" class="text-white" width="20" height="20"></i>
+            <button onclick="window.toggleUserMenu(event)" id="account-btn" class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center border-2 border-[#3E5A7A] shadow-lg hover:scale-110 transition-transform relative z-[600]">
+                <i data-lucide="user" class="text-white" width="20"></i>
             </button>
             <span class="text-[9px] font-bold uppercase tracking-wider mt-2 text-slate-400">Conta</span>
             
-            <!-- Dropdown da Conta (Z-index superior e sobreposto) -->
-            <div id="user-dropdown" class="hidden absolute top-0 left-24 bg-[#0a0c10] border border-[#3E5A7A]/40 rounded-2xl p-5 w-72 z-[999] opacity-0 scale-95 transition-all duration-200 origin-left">
+            <div id="user-dropdown" class="hidden absolute top-0 left-24 bg-[#0a0c10] border border-[#3E5A7A]/40 rounded-2xl p-5 w-72 z-[1000] opacity-0 scale-95 transition-all duration-200 origin-left backdrop-blur-3xl">
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 bg-[#3E5A7A]/20 rounded-full flex items-center justify-center shrink-0 text-[#3E5A7A]">
-                        <i data-lucide="user" width="18"></i>
-                    </div>
+                    <div class="w-10 h-10 bg-[#3E5A7A]/20 rounded-full flex items-center justify-center shrink-0"><i data-lucide="user" class="text-[#3E5A7A]" width="18"></i></div>
                     <div class="overflow-hidden">
-                        <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Sessão Ativa</p>
+                        <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Ativo</p>
                         <p class="text-sm font-bold text-white truncate" id="display-user-email">...</p>
                     </div>
                 </div>
-                
-                <div id="account-switcher" class="flex flex-col gap-1 mb-4 border-t border-white/5 pt-3">
-                    <!-- Outras contas aqui -->
-                </div>
-
-                <div class="h-px w-full bg-white/5 mb-3"></div>
-                <button onclick="window.showGoogleSelector()" class="w-full flex items-center gap-3 text-[#3E5A7A] hover:bg-[#3E5A7A]/10 p-3 rounded-xl transition-all text-xs font-bold mb-1">
-                    <i data-lucide="users" width="14"></i> Alternar / Adicionar
-                </button>
-                <button onclick="window.performLogout(true)" class="w-full flex items-center gap-3 text-red-400 hover:bg-red-500/10 p-3 rounded-xl transition-all text-xs font-bold">
-                    <i data-lucide="log-out" width="14"></i> Sair de Tudo
-                </button>
+                <div id="account-switcher" class="flex flex-col gap-1 mb-4 border-t border-white/5 pt-3"></div>
+                <button onclick="window.performLogout()" class="w-full flex items-center gap-3 text-red-400 hover:bg-red-500/10 p-3 rounded-xl transition-all text-xs font-bold"><i data-lucide="log-out" width="14"></i> Sair de Tudo</button>
             </div>
         </div>
 
         <div class="w-10 h-px bg-white/10 mb-4 shrink-0"></div>
         <nav class="flex-1 flex flex-col gap-3 w-full items-center overflow-y-auto hide-scrollbar" id="nav-categories"></nav>
+        
         <div class="mt-auto flex flex-col gap-4 items-center w-full px-2 shrink-0 pt-6">
-            <button onclick="window.togglePrivacy()" id="btn-privacy" class="flex flex-col items-center justify-center w-[72px] py-3 rounded-xl transition-all text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20"><i data-lucide="shield-off" width="20"></i><span class="text-[9px] font-bold uppercase tracking-wider mt-2">Privado</span></button>
-            <button onclick="window.toggleSettings()" id="btn-settings" class="flex flex-col items-center justify-center w-[72px] py-3 text-gray-500 hover:text-gray-300 transition-all rounded-xl hover:bg-white/5"><i data-lucide="settings" width="20"></i><span class="text-[9px] font-bold uppercase tracking-wider mt-2">Ajustes</span></button>
+            <!-- Botão Privado (Z-index corrigido) -->
+            <button onclick="window.togglePrivacy(event)" id="btn-privacy" class="relative z-[501] flex flex-col items-center justify-center w-[72px] py-3 rounded-xl transition-all text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20 active:scale-95">
+                <i data-lucide="shield-off" id="privacy-icon" width="20"></i>
+                <span class="text-[9px] font-bold uppercase mt-2">Privado</span>
+            </button>
+            <button onclick="window.toggleSettings()" id="btn-settings" class="flex flex-col items-center justify-center w-[72px] py-3 text-gray-500 hover:text-gray-300 transition-all rounded-xl hover:bg-white/5"><i data-lucide="settings" width="20"></i><span class="text-[9px] font-bold uppercase mt-2">Ajustes</span></button>
         </div>
     </aside>
 
@@ -169,12 +140,12 @@
     <main class="flex-1 flex flex-col relative overflow-hidden bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-800/20 via-[#0a0c10] to-[#0a0c10]">
         <header id="main-header" class="px-12 py-10 flex justify-between items-start z-10 shrink-0">
             <div>
-                <h1 class="text-4xl font-light tracking-tight text-white mb-2">My<span class="font-bold text-[#3E5A7A] font-serif">Notes</span></h1>
+                <h1 class="text-4xl font-light text-white mb-2">My<span class="font-bold text-[#3E5A7A] font-serif">Notes</span></h1>
                 <p class="text-slate-500 text-sm tracking-widest uppercase font-semibold" id="header-stats">Estante</p>
             </div>
             <div class="flex gap-4 relative">
-                <!-- Botão Travar (Garantindo Clickability) -->
-                <button onclick="window.toggleGlobalEdit()" id="btn-global-edit" class="relative z-[450] bg-white/5 border border-white/10 rounded-xl px-4 flex items-center justify-center gap-2 text-gray-400 hover:bg-white/10 transition-colors cursor-pointer active:scale-95 group">
+                <!-- Botão Travar com Engrenagem Giratória -->
+                <button onclick="window.toggleGlobalEdit()" id="btn-global-edit" class="relative z-[450] bg-white/5 border border-white/10 rounded-xl px-4 h-[42px] flex items-center justify-center gap-3 text-gray-400 hover:bg-white/10 transition-all cursor-pointer">
                     <i data-lucide="lock" width="16" id="lock-icon"></i>
                     <span class="text-xs font-bold uppercase hidden md:inline" id="lock-label">Travado</span>
                 </button>
@@ -189,67 +160,49 @@
                 <div id="calendar-widget" class="hidden absolute top-[60px] right-0 bg-[#0a0c10]/95 backdrop-blur-xl border border-[#3E5A7A]/30 p-5 rounded-2xl w-72 shadow-[0_30px_60px_rgba(0,0,0,0.8)] transition-all z-[800] opacity-0 scale-95 origin-top-right">
                     <div class="flex justify-between items-center mb-4 text-white">
                         <button onclick="window.changeMonth(-1)" class="p-1 hover:bg-white/10 rounded"><i data-lucide="chevron-left" width="16"></i></button>
-                        <h3 id="calendar-month-year" class="text-[10px] uppercase tracking-widest text-[#3E5A7A] font-bold">...</h3>
+                        <h3 id="calendar-month-year" class="text-[10px] uppercase font-bold text-[#3E5A7A]">...</h3>
                         <button onclick="window.changeMonth(1)" class="p-1 hover:bg-white/10 rounded"><i data-lucide="chevron-right" width="16"></i></button>
                     </div>
-                    <div class="grid grid-cols-7 gap-y-3 gap-x-1 text-[11px] text-center font-medium" id="calendar-days-container">
-                        <span class="text-gray-600">D</span><span class="text-gray-600">S</span><span class="text-gray-600">T</span><span class="text-gray-600">Q</span><span class="text-gray-600">Q</span><span class="text-gray-600">S</span><span class="text-gray-600">S</span>
-                        <div id="calendar-days" class="contents"></div>
+                    <div class="grid grid-cols-7 gap-y-3 text-[11px] text-center font-medium text-gray-500">
+                        <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
                     </div>
+                    <div id="calendar-days" class="grid grid-cols-7 gap-y-3 mt-2 text-[11px] text-center"></div>
                 </div>
             </div>
         </header>
 
-        <section id="notebooks-container" class="flex-1 overflow-y-auto pb-12 pt-4 z-10 w-full scroll-smooth"></section>
-        
-        <!-- PAINEL DE AJUSTES (RESTAURADO) -->
+        <section id="notebooks-container" class="flex-1 overflow-y-auto pb-24 pt-4 z-10 w-full scroll-smooth"></section>
+
+        <!-- AJUSTES RESTAURADO -->
         <section id="settings-panel" class="hidden absolute inset-0 bg-[#0a0c10]/95 backdrop-blur-xl z-[900] overflow-y-auto p-12">
             <div class="max-w-4xl mx-auto bg-white/5 border border-white/10 rounded-3xl p-12 shadow-2xl mt-10">
                 <div class="flex justify-between items-center mb-10 border-b border-white/10 pb-6 text-white">
-                    <div>
-                        <h2 class="text-3xl font-serif tracking-wide mb-2">Painel de Configurações</h2>
-                        <p class="text-slate-400 text-sm">Controle as preferências globais e gestão de dados.</p>
-                    </div>
-                    <button onclick="window.toggleSettings()" class="p-3 bg-white/5 hover:bg-white/10 rounded-full transition-colors text-slate-300 hover:text-white"><i data-lucide="x" width="24"></i></button>
+                    <h2 class="text-3xl font-serif tracking-wide">Ajustes do MyNotes</h2>
+                    <button onclick="window.toggleSettings()" class="p-3 bg-white/5 hover:bg-white/10 rounded-full transition-all"><i data-lucide="x" width="24"></i></button>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-white">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-white leading-relaxed">
                     <div class="space-y-4">
-                        <h3 class="text-xl font-bold text-[#3E5A7A] flex items-center gap-3"><i data-lucide="palette"></i> Aparência e Interface</h3>
-                        <p class="text-sm text-slate-400 leading-relaxed">Customize como visualiza as suas notas. Pode alternar as pautas (linhas) de fundo globalmente aqui.</p>
-                        <div class="flex gap-4 pt-2">
-                            <button id="btn-global-lines" onclick="window.toggleGlobalLines()" class="bg-[#3E5A7A] hover:bg-[#2b4058] px-6 py-3 rounded-xl text-sm transition-all flex items-center gap-2 shadow-lg">
-                                <i data-lucide="align-justify"></i> Pautas Ativas
-                            </button>
-                        </div>
+                        <h3 class="text-xl font-bold text-[#3E5A7A]">Visual e Aparência</h3>
+                        <p class="text-sm text-slate-400">Configure as pautas de fundo para melhorar a legibilidade. Esta opção afeta todos os seus cadernos ativos.</p>
+                        <button id="btn-global-lines" onclick="window.toggleGlobalLines()" class="bg-[#3E5A7A] hover:bg-[#2b4058] px-5 py-3 rounded-xl text-sm transition-all flex items-center gap-2"><i data-lucide="align-justify"></i> Pautas Ativas</button>
                     </div>
-                    
-                    <div class="space-y-4 md:col-span-2 border-t border-white/10 pt-8 mt-4">
-                        <h3 class="text-xl font-bold text-emerald-500 flex items-center gap-3"><i data-lucide="database"></i> Gestão de Dados e Segurança</h3>
-                        <p class="text-sm text-slate-400 leading-relaxed max-w-2xl">
-                            Cuidado: As ações de eliminação são permanentes. Gerir dados de teste ajuda a preencher a interface para novas contas.
-                        </p>
+                    <div class="space-y-4 md:col-span-2 border-t border-white/10 pt-8">
+                        <h3 class="text-xl font-bold text-emerald-500">Controlo de Dados</h3>
+                        <p class="text-sm text-slate-400">Gere cadernos de exemplo ou limpe a sua estante. Note que a exclusão total requer múltiplas confirmações.</p>
                         <div class="flex flex-wrap gap-4 pt-4">
-                            <button onclick="window.generateTestData()" class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-6 py-3 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-emerald-600/30 transition-all"><i data-lucide="sparkles"></i> Gerar Cadernos de Teste</button>
-                            
-                            <button id="btn-delete-all" onclick="window.handleDeleteAll()" class="bg-red-500/10 text-red-400 border border-red-500/20 px-6 py-3 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-red-500/20 transition-all">
-                                <i data-lucide="alert-octagon" width="18"></i> Apagar Tudo Permanentemente
-                            </button>
+                            <button onclick="window.generateTestData()" class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-6 py-3 rounded-xl text-sm font-bold flex items-center gap-2"><i data-lucide="sparkles"></i> Gerar Dados de Teste</button>
+                            <button id="btn-delete-all" onclick="window.handleDeleteAll()" class="bg-red-500/10 text-red-400 border border-red-500/20 px-6 py-3 rounded-xl text-sm font-bold flex items-center gap-2"><i data-lucide="alert-octagon"></i> Apagar Tudo</button>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+        
+        <!-- Botão de Adição Universal -->
+        <button onclick="window.createNewNote()" id="universal-add" class="fixed bottom-10 right-10 w-16 h-16 bg-[#3E5A7A] text-white rounded-full flex items-center justify-center z-[600] hover:scale-110 active:scale-95 transition-all shadow-2xl">
+            <i data-lucide="plus" width="32"></i>
+        </button>
     </main>
-
-    <!-- PLAYER DE VÍDEO -->
-    <div id="video-preview-modal" class="hidden fixed bottom-10 right-10 z-[3000] w-[320px] bg-[#0a0c10] border border-white/10 rounded-2xl shadow-2xl overflow-hidden transition-all scale-95 opacity-0">
-        <div class="bg-white/5 p-2 flex justify-between items-center border-b border-white/10 text-white">
-            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-2">Video Preview</span>
-            <button onclick="window.closeVideoPreview()" class="text-gray-500 hover:text-white"><i data-lucide="x" width="16"></i></button>
-        </div>
-        <div id="video-container" class="aspect-video bg-black flex items-center justify-center"></div>
-    </div>
 
     <!-- Firebase SDKs -->
     <script type="module">
@@ -271,24 +224,24 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- STATE ---
         window.state = {
             notebooks: [], category: 'Todas', search: '', privacyMode: false, showSettings: false, calendarOpen: false, globalShowLines: true, isGlobalEditMode: false, expandedNoteId: null, calendarDate: new Date(), isAuthenticated: false, userId: null, userEmail: '',
-            loggedAccounts: ['gvconecta2025@gmail.com', 'admin@mynotes.pt'],
-            delConfirmStage: 0
+            loggedAccounts: ['gvconecta2025@gmail.com', 'seu-email@teste.pt'],
+            delConfirmStage: 0,
+            shelfNames: { 'Senhas': 'Senhas', 'Códigos': 'Códigos', 'Estudos': 'Estudos', 'Pessoal': 'Pessoal', 'Geral': 'Geral' }
         };
 
         let unsubscribeSnapshot = null;
-        signInAnonymously(auth).catch(e => console.error(e));
+        signInAnonymously(auth);
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 window.state.userId = user.uid;
-                if(window.state.isAuthenticated && window.state.userEmail) loadNotebooks();
+                if(window.state.isAuthenticated) loadNotebooks();
             }
         });
 
-        const normalize = (s) => (s || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const normalize = (s) => (s || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/ç/g, 'c');
 
         function loadNotebooks() {
              const emailSlug = normalize(window.state.userEmail).replace(/[^a-z0-9]/g, "_");
@@ -305,14 +258,14 @@
              });
         }
 
-        // --- LOGIN & SELECTOR ---
+        // --- AUTH ---
         window.showGoogleSelector = () => {
             const modal = document.getElementById('google-selector-modal');
             const list = document.getElementById('google-accounts-list');
             modal.classList.remove('hidden');
             list.innerHTML = window.state.loggedAccounts.map(acc => `
-                <button onclick="window.selectGoogleAccount('${acc}')" class="w-full flex items-center gap-4 p-5 hover:bg-gray-100 transition-colors border-b last:border-0 group">
-                    <div class="w-11 h-11 rounded-full bg-[#3E5A7A]/10 text-[#3E5A7A] flex items-center justify-center font-bold text-lg">${acc[0].toUpperCase()}</div>
+                <button onclick="window.selectAccount('${acc}')" class="w-full flex items-center gap-4 p-4 hover:bg-gray-100 transition-colors border-b">
+                    <div class="w-10 h-10 rounded-full bg-[#3E5A7A]/10 text-[#3E5A7A] flex items-center justify-center font-bold">${acc[0].toUpperCase()}</div>
                     <div class="text-left overflow-hidden">
                         <p class="text-sm font-bold text-gray-900 truncate">${acc.split('@')[0]}</p>
                         <p class="text-xs text-gray-500 truncate">${acc}</p>
@@ -322,9 +275,7 @@
             lucide.createIcons();
         };
 
-        window.hideGoogleSelector = () => document.getElementById('google-selector-modal').classList.add('hidden');
-
-        window.selectGoogleAccount = (email) => {
+        window.selectAccount = (email) => {
             window.state.userEmail = email;
             window.state.isAuthenticated = true;
             window.hideGoogleSelector();
@@ -334,23 +285,18 @@
         };
 
         window.useNewGoogleAccount = () => {
-            const email = prompt("Simulação Google: Digite o novo e-mail:");
+            const email = prompt("E-mail Google:");
             if(email && email.includes('@')) {
                 if(!window.state.loggedAccounts.includes(email)) window.state.loggedAccounts.push(email);
-                window.selectGoogleAccount(email);
+                window.selectAccount(email);
             }
         };
 
         window.performLogin = (e) => {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
-            if(!email.includes('@')) return alert("Insira um e-mail válido");
-            window.state.userEmail = email;
-            if(!window.state.loggedAccounts.includes(email)) window.state.loggedAccounts.push(email);
-            window.state.isAuthenticated = true;
-            document.getElementById('login-screen').classList.add('opacity-0', 'pointer-events-none');
-            window.renderApp();
-            loadNotebooks();
+            if(!email.includes('@')) return;
+            window.selectAccount(email);
         };
 
         window.performLogout = () => location.reload();
@@ -364,8 +310,8 @@
             } else {
                 const others = window.state.loggedAccounts.filter(a => a !== window.state.userEmail);
                 switcher.innerHTML = others.map(acc => `
-                    <button onclick="window.selectGoogleAccount('${acc}')" class="flex items-center gap-2 p-2 hover:bg-white/5 rounded-xl transition-all text-xs text-slate-400 hover:text-white">
-                        <div class="w-5 h-5 rounded-full bg-[#3E5A7A]/30 flex items-center justify-center text-[8px] font-bold text-white">${acc[0].toUpperCase()}</div>
+                    <button onclick="window.selectAccount('${acc}')" class="flex items-center gap-2 p-2 hover:bg-white/5 rounded-xl text-xs text-slate-400 hover:text-white">
+                        <div class="w-5 h-5 rounded-full bg-slate-700 flex items-center justify-center font-bold text-white text-[8px]">${acc[0].toUpperCase()}</div>
                         <span class="truncate">${acc}</span>
                     </button>
                 `).join('');
@@ -374,82 +320,64 @@
             }
         };
 
-        // --- EDITOR & INTERAÇÕES ---
-        window.format = (cmd, val = null) => { document.execCommand(cmd, false, val); };
-        window.insertEmoji = (emoji) => { document.execCommand('insertText', false, emoji); window.toggleEmojiPicker(); };
-        window.toggleEmojiPicker = () => { document.getElementById('emoji-picker').classList.toggle('hidden'); };
-        window.toggleMaximize = (id) => { window.state.expandedNoteId = (window.state.expandedNoteId === id) ? null : id; window.renderApp(); };
-        
-        window.toggleGlobalEdit = () => {
-            window.state.isGlobalEditMode = !window.state.isGlobalEditMode;
+        // --- BUGS FIX: PRIVATE & LOCK ---
+        window.togglePrivacy = (e) => {
+            if(e) e.stopPropagation();
+            window.state.privacyMode = !window.state.privacyMode;
+            const icon = document.getElementById('privacy-icon');
+            const btn = document.getElementById('btn-privacy');
+            if(window.state.privacyMode) {
+                icon.setAttribute('data-lucide', 'shield');
+                btn.classList.replace('text-emerald-500', 'text-red-400');
+                btn.classList.replace('bg-emerald-500/10', 'bg-red-500/20');
+            } else {
+                icon.setAttribute('data-lucide', 'shield-off');
+                btn.classList.replace('text-red-400', 'text-emerald-500');
+                btn.classList.replace('bg-red-500/20', 'bg-emerald-500/10');
+            }
             window.renderApp();
         };
 
-        window.scrollToCategory = (id) => { window.state.category = id; window.state.showSettings = false; window.renderApp(); };
-        window.openNote = (id) => { if(!window.state.isGlobalEditMode) { window.state.notebooks.find(x => x.id === id).isOpen = true; window.renderApp(); } };
-        window.closeNote = (id) => { window.state.notebooks.find(x => x.id === id).isOpen = false; window.state.expandedNoteId = null; window.renderApp(); };
-        window.goToPage = (id, p) => { const n = window.state.notebooks.find(x => x.id === id); if(n) n.currentPage = p; window.renderApp(); };
-        window.addPage = (id) => { const n = window.state.notebooks.find(x => x.id === id); n.pages.push(''); n.currentPage = n.pages.length-1; window.saveNoteData(id); window.renderApp(); };
-        window.updateNoteData = (id, t) => { window.state.notebooks.find(n => n.id === id).pages[window.state.notebooks.find(n => n.id === id).currentPage] = t; };
-
-        window.saveNoteData = async (id) => {
-            const n = window.state.notebooks.find(x => x.id === id);
-            if(n && window.state.userEmail) {
-                const slug = normalize(window.state.userEmail).replace(/[^a-z0-9]/g, "_");
-                await updateDoc(doc(db, 'artifacts', 'mynotes-app', 'users', slug, 'notebooks', id), { pages: n.pages });
-            }
-        };
-
-        window.updateNoteMeta = async (id, f, v) => {
-            const n = window.state.notebooks.find(x => x.id === id);
-            if(n && window.state.userEmail) {
-                n[f] = v;
-                const slug = normalize(window.state.userEmail).replace(/[^a-z0-9]/g, "_");
-                await updateDoc(doc(db, 'artifacts', 'mynotes-app', 'users', slug, 'notebooks', id), { [f]: v });
-            }
-        };
-
-        window.handleDeleteAll = async () => {
-            const btn = document.getElementById('btn-delete-all');
-            if(window.state.delConfirmStage === 0) {
-                window.state.delConfirmStage = 1;
-                btn.innerHTML = '<i data-lucide="alert-triangle"></i> Tem certeza? Clique para CONFIRMAR';
-                btn.classList.add('bg-red-800', 'text-white');
-                lucide.createIcons();
+        window.toggleGlobalEdit = () => {
+            window.state.isGlobalEditMode = !window.state.isGlobalEditMode;
+            const icon = document.getElementById('lock-icon');
+            const label = document.getElementById('lock-label');
+            const btn = document.getElementById('btn-global-edit');
+            
+            if(window.state.isGlobalEditMode) {
+                btn.classList.add('bg-amber-500/10', 'text-amber-500', 'border-amber-500/50');
+                icon.setAttribute('data-lucide', 'settings');
+                icon.classList.add('spin-gear');
+                label.innerText = 'Destravado';
             } else {
-                if(!window.state.userEmail) return;
-                const slug = normalize(window.state.userEmail).replace(/[^a-z0-9]/g, "_");
-                for(let n of window.state.notebooks) {
-                    await deleteDoc(doc(db, 'artifacts', 'mynotes-app', 'users', slug, 'notebooks', n.id));
-                }
-                window.state.delConfirmStage = 0;
-                btn.innerHTML = '<i data-lucide="check"></i> Apagado com sucesso';
-                setTimeout(() => window.renderApp(), 2000);
+                btn.classList.remove('bg-amber-500/10', 'text-amber-500', 'border-amber-500/50');
+                icon.setAttribute('data-lucide', 'lock');
+                icon.classList.remove('spin-gear');
+                label.innerText = 'Travado';
             }
+            window.renderApp();
         };
 
-        window.createNewNote = async (cat) => {
-            const slug = normalize(window.state.userEmail).replace(/[^a-z0-9]/g, "_");
-            await addDoc(collection(db, 'artifacts', 'mynotes-app', 'users', slug, 'notebooks'), { title: 'Nova Caderneta', subtitle: 'Descritivo', date: new Date().toLocaleDateString('pt-BR'), category: cat || 'Geral', color: 'bg-[#5f6368]', showLines: true, pages: [''] });
+        window.scrollShelf = (shelfId, dir) => {
+            const shelf = document.getElementById(shelfId);
+            if(shelf) shelf.scrollBy({ left: 360 * dir, behavior: 'smooth' });
         };
 
-        // --- RENDERS ---
+        // --- NOTEBOOK HTML & WINDOW CONTROLS ---
         function generateNotebookHTML(note, index) {
             const noteNumber = `#${String(index + 1).padStart(3, '0')}`;
             const isMax = window.state.expandedNoteId === note.id;
-            const spirals = Array(20).fill('<div class="h-2 w-full bg-gradient-to-b from-gray-400 via-white to-gray-600 rounded-full border border-gray-700"></div>').join('');
             const displayLines = window.state.globalShowLines && note.showLines !== false;
 
             if(!note.isOpen) {
                 return `
                     <div class="relative w-80 h-[460px] flex-shrink-0 snap-start transition-all duration-300 hover:scale-[1.05]">
-                        <div class="absolute -left-3 top-0 bottom-0 w-6 flex flex-col justify-evenly z-20 pointer-events-none">${spirals}</div>
-                        <div onclick="window.openNote('${note.id}')" class="w-full h-full ${note.color} rounded-r-2xl shadow-2xl border-l-2 border-black/30 cursor-pointer relative overflow-hidden flex justify-end group/card">
+                        <div onclick="window.openNote('${note.id}')" class="w-full h-full ${note.color} rounded-r-2xl shadow-2xl border-l-2 border-black/30 cursor-pointer relative overflow-hidden flex justify-end">
                             <div class="absolute top-4 right-4 text-white/40 font-bold text-[10px]">${noteNumber}</div>
-                            <div class="w-[65%] h-full bg-[#fdfbf7] shadow-[-10px_0_20px_rgba(0,0,0,0.2)] flex flex-col items-center py-10 px-4 text-center z-10 transition-colors group-hover/card:bg-white text-slate-800">
+                            <div class="w-[65%] h-full bg-[#fdfbf7] shadow-[-10px_0_20px_rgba(0,0,0,0.2)] flex flex-col items-center py-10 px-4 text-center z-10">
                                 <i data-lucide="leaf" class="text-emerald-700 mb-4 opacity-70" width="30"></i>
-                                ${window.state.isGlobalEditMode ? `<input type="text" value="${note.title}" onblur="window.updateNoteMeta('${note.id}','title',this.value)" class="editable-input font-bold mb-2">` : `<h2 class="text-lg font-serif font-bold uppercase tracking-widest border-b-2 border-slate-200 pb-3 mb-3 w-full break-words px-2">${note.title}</h2>`}
-                                <p class="text-slate-500 text-[10px] uppercase font-semibold break-words px-2">${note.subtitle}</p>
+                                ${window.state.isGlobalEditMode ? `<input type="text" value="${note.title}" onblur="window.updateNoteMeta('${note.id}','title',this.value)" class="editable-input font-bold mb-2">` : `<h2 class="text-lg font-serif font-bold uppercase tracking-widest border-b-2 border-slate-200 pb-3 mb-3 w-full">${note.title}</h2>`}
+                                <p class="text-slate-500 text-[10px] uppercase">${note.subtitle}</p>
                                 <div class="mt-auto text-[8px] text-slate-400 uppercase tracking-tighter">${note.date}</div>
                             </div>
                         </div>
@@ -457,32 +385,28 @@
                 `;
             }
 
+            // MODO WINDOWS (Min, Max, Close)
             return `
-                <div class="${isMax?'fixed inset-0 z-[2000] p-12 bg-black/90 backdrop-blur-xl':'relative w-80 h-[460px] flex-shrink-0'} flex items-center justify-center transition-all duration-500">
-                    <div class="${isMax?'w-full h-full max-w-6xl':'w-full h-full'} bg-[#fdfbf7] rounded-r-2xl shadow-2xl flex flex-row overflow-hidden border-l border-gray-300">
-                        <div class="w-14 bg-slate-200 border-r border-slate-300 flex flex-col items-center py-4 gap-2 shrink-0 overflow-y-auto hide-scrollbar">
-                            ${note.pages.map((_, i) => `<button onclick="window.goToPage('${note.id}', ${i})" class="w-10 h-10 rounded-xl flex items-center justify-center text-[10px] font-bold ${note.currentPage === i ? 'bg-[#3E5A7A] text-white shadow-md':'text-slate-500 hover:bg-slate-300'}">${i+1}</button>`).join('')}
-                            <button onclick="window.addPage('${note.id}')" class="w-10 h-10 rounded-xl bg-white text-emerald-600 shadow-sm border border-emerald-100 mt-2"><i data-lucide="plus" width="14"></i></button>
+                <div class="${isMax?'fixed inset-0 z-[2000] p-10 bg-black/90 backdrop-blur-xl':'relative w-80 h-[460px] flex-shrink-0'} flex items-center justify-center transition-all duration-500">
+                    <div class="${isMax?'w-full h-full max-w-6xl':'w-full h-full'} bg-[#fdfbf7] rounded-xl shadow-2xl flex flex-row overflow-hidden border border-gray-400">
+                        <div class="w-14 bg-gray-200 border-r border-gray-300 flex flex-col items-center py-4 gap-2 shrink-0 overflow-y-auto hide-scrollbar">
+                            ${note.pages.map((_, i) => `<button onclick="window.goToPage('${note.id}', ${i})" class="w-10 h-10 rounded-xl flex items-center justify-center text-[10px] font-bold ${note.currentPage === i ? 'bg-[#3E5A7A] text-white shadow-md':'text-gray-500 hover:bg-gray-300'}">${i+1}</button>`).join('')}
                         </div>
                         <div class="flex-1 flex flex-col relative">
-                            <div class="bg-white border-b border-slate-200 p-2 flex gap-1 items-center shrink-0">
-                                <button onclick="window.format('bold')" class="p-2 hover:bg-slate-100 rounded text-slate-600"><i data-lucide="bold" width="14"></i></button>
-                                <button onclick="window.format('italic')" class="p-2 hover:bg-slate-100 rounded text-slate-600"><i data-lucide="italic" width="14"></i></button>
-                                <div class="w-px h-4 bg-slate-200 mx-1"></div>
-                                <button onclick="window.insertLink()" class="p-2 hover:bg-slate-100 rounded text-slate-600"><i data-lucide="link" width="14"></i></button>
-                                <button onclick="window.toggleEmojiPicker()" class="p-2 hover:bg-slate-100 rounded text-slate-600"><i data-lucide="smile" width="14"></i></button>
-                                <div id="emoji-picker" class="hidden absolute top-10 left-0 bg-white border border-slate-200 shadow-xl p-3 rounded-xl z-[3000] w-[180px]">
-                                    <div class="emoji-grid">${['😊','🔥','💡','✅','🚀','⭐','📍','📌','💻','📝'].map(e => `<button onclick="window.insertEmoji('${e}')" class="hover:scale-125 transition-transform text-xl">${e}</button>`).join('')}</div>
+                            <!-- Windows Style Controls -->
+                            <div class="bg-gray-100 border-b p-2 flex justify-between items-center shrink-0">
+                                <span class="text-[10px] font-bold text-gray-500 uppercase ml-2">${noteNumber} - Editor</span>
+                                <div class="flex items-center">
+                                    <button onclick="window.closeNote('${note.id}')" class="p-1 hover:bg-gray-300 text-gray-500" title="Minimizar"><i data-lucide="minus" width="14"></i></button>
+                                    <button onclick="window.toggleMaximize('${note.id}')" class="p-1 hover:bg-gray-300 text-gray-500" title="${isMax?'Restaurar':'Maximizar'}"><i data-lucide="${isMax?'copy':'square'}" width="14"></i></button>
+                                    <button onclick="window.closeNote('${note.id}')" class="p-1 hover:bg-red-500 hover:text-white text-gray-500" title="Fechar"><i data-lucide="x" width="14"></i></button>
                                 </div>
-                                <div class="flex-1"></div>
-                                <button onclick="window.toggleMaximize('${note.id}')" class="p-2 text-slate-400 hover:text-slate-600"><i data-lucide="${isMax?'shrink':'maximize'}" width="16"></i></button>
-                                <button onclick="window.closeNote('${note.id}')" class="px-4 py-1.5 text-[10px] font-bold text-slate-500 bg-slate-100 rounded-full hover:bg-slate-200 shadow-sm active:scale-95">FECHAR</button>
                             </div>
-                            <div class="flex-1 relative overflow-auto custom-scroll">
-                                <div id="editor-${note.id}" contenteditable="true" oninput="window.updateNoteData('${note.id}', this.innerHTML)" onblur="window.saveNoteData('${note.id}')" class="editor-content p-10 text-slate-700 leading-[32px] ${displayLines?'lines-bg':''} ${window.state.privacyMode?'blur-lg select-none pointer-events-none':''}" style="padding-left:55px" spellcheck="false">
+                            <div class="flex-1 overflow-auto p-8 relative">
+                                <div contenteditable="true" oninput="window.updateNoteData('${note.id}', this.innerHTML)" onblur="window.saveNoteData('${note.id}')" class="editor-content text-slate-700 leading-[32px] ${displayLines?'lines-bg':''} ${window.state.privacyMode?'blur-2xl select-none pointer-events-none':''}" style="padding-left:45px">
                                     ${note.pages[note.currentPage] || ''}
                                 </div>
-                                ${displayLines ? '<div class="absolute left-12 top-0 bottom-0 w-px bg-red-200 pointer-events-none"></div>' : ''}
+                                ${displayLines ? '<div class="absolute left-10 top-0 bottom-0 w-px bg-red-200 pointer-events-none"></div>' : ''}
                             </div>
                         </div>
                     </div>
@@ -492,8 +416,7 @@
 
         window.renderApp = function() {
             if(!window.state.isAuthenticated) return;
-            document.getElementById('display-user-email').innerText = window.state.userEmail;
-            
+            const container = document.getElementById('notebooks-container');
             const cats = ['Senhas','Códigos','Estudos','Pessoal','Geral'];
             const term = normalize(window.state.search);
             const filtered = window.state.notebooks.filter(n => !term || normalize(n.title).includes(term) || normalize(n.subtitle).includes(term));
@@ -503,90 +426,107 @@
                 if(window.state.category !== 'Todas' && window.state.category !== cName) return;
                 const notes = filtered.filter(n => n.category === cName);
                 if(window.state.search !== '' && notes.length === 0) return;
-                html += `<div id="section-${cName}" class="mb-14 relative w-full pt-4"><div class="px-12 mb-6 border-l-4 border-[#3E5A7A] ml-12"><h2 class="text-2xl font-serif text-white">${cName}</h2></div><div class="flex gap-10 overflow-x-auto snap-x px-12 pb-8 hide-scrollbar scroll-smooth">${notes.map(n => generateNotebookHTML(n, window.state.notebooks.indexOf(n))).join('')}<div onclick="window.createNewNote('${cName}')" class="w-80 h-[460px] shrink-0 border-2 border-dashed border-white/10 rounded-r-2xl flex flex-col items-center justify-center text-slate-500 hover:bg-white/5 cursor-pointer group/add"><i data-lucide="plus" width="32" class="group-hover/add:scale-110 transition-transform"></i><span class="text-[10px] font-bold mt-2 uppercase tracking-widest">Novo em ${cName}</span></div></div></div>`;
+                
+                const shelfId = `shelf-${cName}`;
+                html += `
+                    <div id="section-${cName}" class="mb-14 relative w-full pt-4 group/shelf">
+                        <div class="px-12 mb-6 border-l-4 border-[#3E5A7A] ml-12 flex items-center gap-4">
+                            ${window.state.isGlobalEditMode ? `<input type="text" value="${window.state.shelfNames[cName]}" onblur="window.state.shelfNames['${cName}']=this.value" class="shelf-title-edit text-2xl font-serif">` : `<h2 class="text-2xl font-serif text-white">${window.state.shelfNames[cName]}</h2>`}
+                        </div>
+                        <div class="relative w-full">
+                            <button onclick="window.scrollShelf('${shelfId}', -1)" class="absolute left-0 top-1/2 -translate-y-1/2 z-40 bg-black/60 text-white p-4 rounded-r-xl opacity-0 group-hover/shelf:opacity-100 transition-all"><i data-lucide="chevron-left"></i></button>
+                            <div id="${shelfId}" class="flex gap-10 overflow-x-auto snap-x px-12 pb-8 hide-scrollbar scroll-smooth">
+                                ${notes.map(n => generateNotebookHTML(n, window.state.notebooks.indexOf(n))).join('')}
+                                <div onclick="window.createNewNote('${cName}')" class="w-80 h-[460px] shrink-0 border-2 border-dashed border-white/10 rounded-r-2xl flex flex-col items-center justify-center text-slate-500 hover:bg-white/5 cursor-pointer">
+                                    <i data-lucide="plus" width="32"></i><span class="text-[10px] font-bold mt-2 uppercase">Novo em ${cName}</span>
+                                </div>
+                            </div>
+                            <button onclick="window.scrollShelf('${shelfId}', 1)" class="absolute right-0 top-1/2 -translate-y-1/2 z-40 bg-black/60 text-white p-4 rounded-l-xl opacity-0 group-hover/shelf:opacity-100 transition-all"><i data-lucide="chevron-right"></i></button>
+                        </div>
+                    </div>
+                `;
             });
+            container.innerHTML = html;
             
-            document.getElementById('notebooks-container').innerHTML = html || '<div class="flex flex-col items-center mt-20 opacity-30 text-white font-serif">Nenhum caderno encontrado.</div>';
-            
-            const categories = new Set(window.state.notebooks.map(n => n.category)).size;
-            document.getElementById('header-stats').innerText = `${categories} Prateleiras • ${window.state.notebooks.length} Cadernos`;
-            
+            document.getElementById('header-stats').innerText = `${new Set(window.state.notebooks.map(n => n.category)).size} Prateleiras • ${window.state.notebooks.length} Cadernos`;
             document.getElementById('nav-categories').innerHTML = ['Todas', ...cats].map(cat => `<button onclick="window.scrollToCategory('${cat}')" class="flex flex-col items-center justify-center w-[72px] py-3 rounded-xl transition-all ${window.state.category === cat ? 'bg-white/10 text-white shadow-md' : 'text-gray-500 hover:text-white hover:bg-white/5'}"><i data-lucide="${cat==='Todas'?'folder-open':cat==='Senhas'?'key':cat==='Códigos'?'code-2':cat==='Estudos'?'book-open':cat==='Pessoal'?'user':'layout-grid'}" width="22"></i><span class="text-[9px] font-bold uppercase tracking-wider mt-2">${cat}</span></button>`).join('');
-            
-            const btnLock = document.getElementById('btn-global-edit');
-            const iconLock = document.getElementById('lock-icon');
-            const labelLock = document.getElementById('lock-label');
-            if(window.state.isGlobalEditMode) {
-                btnLock.classList.add('bg-amber-500/10', 'text-amber-500', 'border-amber-500/50');
-                iconLock.setAttribute('data-lucide', 'unlock');
-                labelLock.innerText = 'Destravado';
-            } else {
-                btnLock.classList.remove('bg-amber-500/10', 'text-amber-500', 'border-amber-500/50');
-                iconLock.setAttribute('data-lucide', 'lock');
-                labelLock.innerText = 'Travado';
-            }
-
-            const header = document.getElementById('main-header');
-            const container = document.getElementById('notebooks-container');
-            const settingsPanel = document.getElementById('settings-panel');
-            if(window.state.showSettings) {
-                header.classList.add('hidden'); container.classList.add('hidden'); settingsPanel.classList.remove('hidden');
-                document.getElementById('btn-global-lines').innerHTML = `<i data-lucide="${window.state.globalShowLines?'align-justify':'file'}"></i> Pautas ${window.state.globalShowLines?'Ativas':'Ocultas'}`;
-            } else {
-                settingsPanel.classList.add('hidden'); header.classList.remove('hidden'); container.classList.remove('hidden');
-            }
             lucide.createIcons();
-        }
+            window.renderCalendarWidget();
+        };
 
-        // --- CALENDÁRIO & TESTES ---
-        window.toggleCalendar = (e) => { e.stopPropagation(); window.state.calendarOpen = !window.state.calendarOpen; window.renderCalendarWidget(); };
+        // --- OUTROS ---
+        window.hideGoogleSelector = () => document.getElementById('google-selector-modal').classList.add('hidden');
+        window.changeMonth = (v) => { window.state.calendarDate.setMonth(window.state.calendarDate.getMonth() + v); window.renderCalendarWidget(); };
         window.renderCalendarWidget = () => {
             const cal = document.getElementById('calendar-widget');
-            if(window.state.calendarOpen) {
-                cal.classList.remove('hidden'); setTimeout(() => cal.classList.add('opacity-100', 'scale-100'), 10);
-                const d = window.state.calendarDate;
-                const names = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-                document.getElementById('calendar-month-year').innerText = `${names[d.getMonth()]} ${d.getFullYear()}`;
-                const first = new Date(d.getFullYear(), d.getMonth(), 1).getDay();
-                const days = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-                let h = ''; for(let i=0; i<first; i++) h += '<div></div>';
-                for(let i=1; i<=days; i++) {
-                    const isT = new Date().toDateString() === new Date(d.getFullYear(), d.getMonth(), i).toDateString();
-                    h += `<div class="h-6 flex items-center justify-center rounded-full ${isT?'bg-[#3E5A7A] text-white shadow-lg':'text-gray-400'} text-[10px] hover:bg-white/10 cursor-pointer">${i}</div>`;
-                }
-                document.getElementById('calendar-days').innerHTML = h;
-            } else { cal.classList.remove('opacity-100', 'scale-100'); setTimeout(() => cal.classList.add('hidden'), 300); }
+            if(!window.state.calendarOpen) { cal.classList.add('hidden'); return; }
+            cal.classList.remove('hidden'); setTimeout(() => cal.classList.add('opacity-100', 'scale-100'), 10);
+            const d = window.state.calendarDate;
+            document.getElementById('calendar-month-year').innerText = `${["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"][d.getMonth()]} ${d.getFullYear()}`;
+            const first = new Date(d.getFullYear(), d.getMonth(), 1).getDay();
+            const days = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+            let h = ''; for(let i=0; i<first; i++) h += '<div></div>';
+            for(let i=1; i<=days; i++) {
+                const isT = new Date().toDateString() === new Date(d.getFullYear(), d.getMonth(), i).toDateString();
+                h += `<div class="h-6 flex items-center justify-center rounded-full ${isT?'bg-[#3E5A7A] text-white shadow-lg':'text-gray-400'} text-[10px]">${i}</div>`;
+            }
+            document.getElementById('calendar-days').innerHTML = h;
         };
-        window.changeMonth = (v) => { window.state.calendarDate.setMonth(window.state.calendarDate.getMonth() + v); window.renderCalendarWidget(); };
 
+        window.updateSearch = (v) => { window.state.search = v; window.renderApp(); };
+        window.toggleSettings = () => { window.state.showSettings = !window.state.showSettings; window.renderApp(); };
+        window.toggleGlobalLines = () => { window.state.globalShowLines = !window.state.globalShowLines; window.renderApp(); };
+        window.toggleMaximize = (id) => { window.state.expandedNoteId = (window.state.expandedNoteId === id) ? null : id; window.renderApp(); };
+        window.scrollToCategory = (id) => { window.state.category = id; window.renderApp(); };
+        window.openNote = (id) => { const n = window.state.notebooks.find(x => x.id === id); if(n) n.isOpen = true; window.renderApp(); };
+        window.closeNote = (id) => { const n = window.state.notebooks.find(x => x.id === id); if(n) n.isOpen = false; window.state.expandedNoteId = null; window.renderApp(); };
+        window.goToPage = (id, p) => { const n = window.state.notebooks.find(x => x.id === id); if(n) n.currentPage = p; window.renderApp(); };
+        window.updateNoteData = (id, t) => { const n = window.state.notebooks.find(n => n.id === id); n.pages[n.currentPage] = t; };
+        window.saveNoteData = async (id) => {
+            const n = window.state.notebooks.find(x => x.id === id);
+            if(n && window.state.userEmail) {
+                const slug = normalize(window.state.userEmail).replace(/[^a-z0-9]/g, "_");
+                await updateDoc(doc(db, 'artifacts', 'mynotes-app', 'users', slug, 'notebooks', id), { pages: n.pages });
+            }
+        };
+        window.updateNoteMeta = async (id, f, v) => {
+            const n = window.state.notebooks.find(x => x.id === id);
+            if(n && window.state.userEmail) {
+                n[f] = v;
+                const slug = normalize(window.state.userEmail).replace(/[^a-z0-9]/g, "_");
+                await updateDoc(doc(db, 'artifacts', 'mynotes-app', 'users', slug, 'notebooks', id), { [f]: v });
+            }
+        };
+        window.createNewNote = async (cat) => {
+            const slug = normalize(window.state.userEmail).replace(/[^a-z0-9]/g, "_");
+            await addDoc(collection(db, 'artifacts', 'mynotes-app', 'users', slug, 'notebooks'), { title: 'Nova Caderneta', subtitle: 'Descritivo', date: new Date().toLocaleDateString('pt-BR'), category: cat || window.state.category || 'Geral', color: 'bg-[#5f6368]', showLines: true, pages: [''] });
+        };
         window.togglePasswordVisibility = () => {
-            const input = document.getElementById('login-pass');
-            const icon = document.getElementById('eye-icon');
-            if(input.type === 'password') { input.type = 'text'; icon.setAttribute('data-lucide', 'eye-off'); }
-            else { input.type = 'password'; icon.setAttribute('data-lucide', 'eye'); }
+            const i = document.getElementById('login-pass'), e = document.getElementById('eye-icon');
+            if(i.type === 'password') { i.type = 'text'; e.setAttribute('data-lucide', 'eye-off'); } else { i.type = 'password'; e.setAttribute('data-lucide', 'eye'); }
             lucide.createIcons();
         };
 
-        window.toggleSettings = () => { window.state.showSettings = !window.state.showSettings; window.renderApp(); };
-        window.toggleGlobalLines = () => { window.state.globalShowLines = !window.state.globalShowLines; window.renderApp(); };
+        window.toggleCalendar = (e) => { e.stopPropagation(); window.state.calendarOpen = !window.state.calendarOpen; window.renderCalendarWidget(); };
+        document.addEventListener('click', (e) => {
+            const ab = document.getElementById('account-btn'), ud = document.getElementById('user-dropdown');
+            if(ab && ud && !ab.contains(e.target) && !ud.contains(e.target)) window.toggleUserMenu(null, true);
+            const cb = document.getElementById('btn-calendar'), cw = document.getElementById('calendar-widget');
+            if(cb && cw && !cb.contains(e.target) && !cw.contains(e.target)) { window.state.calendarOpen = false; window.renderCalendarWidget(); }
+        });
+
+        window.handleDeleteAll = async () => {
+            if(confirm("Deseja apagar tudo permanentemente?")) {
+                const slug = normalize(window.state.userEmail).replace(/[^a-z0-9]/g, "_");
+                for(let n of window.state.notebooks) await deleteDoc(doc(db, 'artifacts', 'mynotes-app', 'users', slug, 'notebooks', n.id));
+            }
+        };
 
         window.generateTestData = async () => {
             const slug = normalize(window.state.userEmail).replace(/[^a-z0-9]/g, "_");
-            const ref = collection(db, 'artifacts', 'mynotes-app', 'users', slug, 'notebooks');
-            await addDoc(ref, { title: 'Contas Cloud', subtitle: 'Azure/GCP', date: new Date().toLocaleDateString('pt-BR'), category: 'Senhas', color: 'bg-[#1e3a5f]', showLines: true, pages: ['<h1>Login</h1><p>User: dev</p>'] });
+            await addDoc(collection(db, 'artifacts', 'mynotes-app', 'users', slug, 'notebooks'), { title: 'Tutorial', subtitle: 'Aprenda a usar', date: '01/01/2026', category: 'Geral', color: 'bg-[#3E5A7A]', showLines: true, pages: ['<h1>MyNotes</h1><p>Use o cadeado para editar as capas.</p>'] });
             window.toggleSettings();
         };
-
-        document.addEventListener('click', (e) => {
-            const accBtn = document.getElementById('account-btn');
-            const dropdown = document.getElementById('user-dropdown');
-            if(accBtn && dropdown && !accBtn.contains(e.target) && !dropdown.contains(e.target)) window.toggleUserMenu(null, true);
-            const calBtn = document.getElementById('btn-calendar');
-            const calWidget = document.getElementById('calendar-widget');
-            if(calBtn && calWidget && !calBtn.contains(e.target) && !calWidget.contains(e.target)) {
-                window.state.calendarOpen = false; window.renderCalendarWidget();
-            }
-        });
 
         lucide.createIcons();
     </script>
