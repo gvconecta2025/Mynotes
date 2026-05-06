@@ -25,7 +25,7 @@
             background-size: 100% 32px;
         }
         
-        /* Scrollbars customizadas */
+        /* Scrollbars customizadas globais */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
@@ -34,7 +34,7 @@
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.1); }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.2); }
 
-        /* Ocultar scrollbar nas prateleiras estilo Netflix */
+        /* Ocultar scrollbar apenas nas prateleiras horizontais */
         .hide-scrollbar {
             -ms-overflow-style: none;  /* IE and Edge */
             scrollbar-width: none;  /* Firefox */
@@ -57,11 +57,13 @@
         </nav>
 
         <div class="mt-auto flex flex-col gap-4 items-center w-full px-2">
-            <button onclick="window.togglePrivacy()" id="btn-privacy" class="flex flex-col items-center justify-center w-full h-14 rounded-xl transition-all text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20" title="Ativar Escudo de Privacidade">
+            <button onclick="window.togglePrivacy()" id="btn-privacy" class="flex flex-col items-center justify-center w-[72px] py-3 rounded-xl transition-all text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20" title="Ativar Escudo de Privacidade">
                 <i data-lucide="shield-off" width="20" height="20"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wider mt-2">Privado</span>
             </button>
-            <button onclick="window.toggleSettings()" id="btn-settings" class="flex flex-col items-center justify-center w-full h-14 text-gray-500 hover:text-gray-300 transition-all rounded-xl hover:bg-white/5" title="Configurações Principais">
+            <button onclick="window.toggleSettings()" id="btn-settings" class="flex flex-col items-center justify-center w-[72px] py-3 text-gray-500 hover:text-gray-300 transition-all rounded-xl hover:bg-white/5" title="Configurações Principais">
                 <i data-lucide="settings" width="20" height="20"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wider mt-2">Ajustes</span>
             </button>
         </div>
     </aside>
@@ -80,7 +82,7 @@
                 </p>
             </div>
 
-            <div class="flex gap-6">
+            <div class="flex gap-4 relative">
                 <div class="relative group">
                     <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
                         <i data-lucide="search" width="16" height="16"></i>
@@ -88,14 +90,19 @@
                     <input 
                         type="text" 
                         id="search-input"
-                        onkeyup="window.updateSearch(this.value)"
+                        oninput="window.updateSearch(this.value)"
                         placeholder="Pesquisar..." 
                         class="bg-white/5 border border-white/10 rounded-full py-2.5 pl-12 pr-4 text-sm text-gray-200 outline-none focus:border-[#3E5A7A] transition-colors w-64"
                     />
                 </div>
 
-                <!-- Calendário Estático -->
-                <div class="bg-white/5 border border-white/10 p-5 rounded-2xl w-72 backdrop-blur-sm">
+                <!-- Botão de Toggle do Calendário -->
+                <button onclick="window.toggleCalendar()" class="bg-white/5 border border-white/10 rounded-full w-[42px] h-[42px] flex items-center justify-center text-gray-400 hover:bg-white/10 hover:text-white transition-colors">
+                    <i data-lucide="calendar" width="18" height="18"></i>
+                </button>
+
+                <!-- Calendário Widget Recolhível -->
+                <div id="calendar-widget" class="absolute top-[60px] right-0 bg-[#0a0c10]/95 backdrop-blur-xl border border-white/10 p-5 rounded-2xl w-72 shadow-2xl transition-all duration-300 transform origin-top-right z-50">
                     <h3 class="text-[10px] uppercase tracking-widest text-[#3E5A7A] mb-4 text-center font-bold">Maio 2026</h3>
                     <div class="grid grid-cols-7 gap-y-3 gap-x-1 text-[11px] text-center font-medium" id="calendar-grid">
                         <span class="text-gray-600">D</span><span class="text-gray-600">S</span><span class="text-gray-600">T</span>
@@ -106,8 +113,8 @@
             </div>
         </header>
 
-        <!-- PALCO DAS CADERNETAS -->
-        <section id="notebooks-container" class="flex-1 overflow-y-auto pb-12 pt-4 z-10 w-full perspective-[1000px] transition-opacity duration-300">
+        <!-- PALCO DAS CADERNETAS (Com scroll vertical para as prateleiras) -->
+        <section id="notebooks-container" class="flex-1 overflow-y-auto pb-12 pt-4 z-10 w-full scroll-smooth">
             <!-- Prateleiras injetadas via JS -->
             <div class="text-gray-500 flex flex-col items-center justify-center w-full h-full mt-20">
                <i data-lucide="loader-2" class="animate-spin w-10 h-10 mb-4"></i>
@@ -147,7 +154,7 @@
                         </div>
                     </div>
                     
-                    <!-- Gestão de Dados (Onde vamos injectar os dados de teste) -->
+                    <!-- Gestão de Dados -->
                     <div class="space-y-4 md:col-span-2 border-t border-white/10 pt-8 mt-4">
                         <h3 class="text-xl font-bold flex items-center gap-3 text-emerald-500"><i data-lucide="database"></i> Gestão de Dados & Prateleiras</h3>
                         <p class="text-sm text-slate-400 leading-relaxed max-w-2xl">
@@ -191,10 +198,11 @@
         // --- ESTADO DO APLICATIVO ---
         window.state = {
             notebooks: [],
-            category: 'Todas',
+            category: 'Todas', // Usado para destacar o botão lateral
             search: '',
             privacyMode: false,
             showSettings: false,
+            calendarOpen: true,
             userId: null
         };
 
@@ -226,7 +234,6 @@
                      loadedNotes.push({ id: doc.id, ...doc.data(), isOpen: false, currentPage: 0, isEditing: false });
                  });
                  
-                 // Preservar estado aberto/página atual se já existiam na UI
                  window.state.notebooks = loadedNotes.map(newNote => {
                      const existingNote = window.state.notebooks.find(n => n.id === newNote.id);
                      return existingNote ? { ...newNote, isOpen: existingNote.isOpen, currentPage: existingNote.currentPage, isEditing: existingNote.isEditing } : newNote;
@@ -238,7 +245,7 @@
              });
         }
 
-        // --- GERAÇÃO DE DADOS DE TESTE (10 Cadernetas Distintas) ---
+        // --- GERAÇÃO DE DADOS DE TESTE ---
         window.generateTestData = async () => {
              if(!window.state.userId) return;
              
@@ -261,7 +268,7 @@
                 { title: 'Diário de Bordo', subtitle: 'Reflexões e Hábitos', date: dateStr, tags: ['diário', 'vida'], category: 'Pessoal', color: 'bg-[#2a4d3e]', pages: ['Hoje foi um dia incrivelmente produtivo. Consegui implementar as novas funcionalidades no sistema de notas.\n\nAmanhã o foco será otimizar a performance.'] },
                 { title: 'Receitas da Avó', subtitle: 'Doces e Salgados', date: dateStr, tags: ['culinária', 'casa'], category: 'Pessoal', color: 'bg-[#996a2e]', pages: ['Bolo de Cenoura\n\nIngredientes:\n- 3 cenouras\n- 2 chávenas de açúcar\n- 1/2 chávena de óleo\n- 4 ovos\n- 2 chávenas de farinha\n\nPreparação: ...'] },
                 { title: 'Viagem ao Japão', subtitle: 'Roteiro 2026', date: dateStr, tags: ['viagem', 'férias'], category: 'Pessoal', color: 'bg-[#732a3f]', pages: ['Dia 1: Chegada a Tóquio (Narita). Fazer check-in no hotel em Shinjuku.\n\nDia 2: Visita a Quioto. Apanhar o Shinkansen de manhã cedo.\n\nDia 3: Osaka...'] },
-                { title: 'Ideias de App', subtitle: 'Brainstorming', date: dateStr, tags: ['projetos', 'ideias'], category: 'Pessoal', color: 'bg-[#465a6e]', pages: ['MyNotes - App de anotações tátil\n\n- Usar cadernos virtuais.\n- Firebase para sincronização.\n- Cada categoria tem a sua própria prateleira.\n- Suporte para tags e modo de privacidade.'] }
+                { title: 'Ideias de App', subtitle: 'Brainstorming', date: dateStr, tags: ['projetos', 'ideias'], category: 'Geral', color: 'bg-[#465a6e]', pages: ['MyNotes - App de anotações tátil\n\n- Usar cadernos virtuais.\n- Firebase para sincronização.\n- Cada categoria tem a sua própria prateleira.\n- Suporte para tags e modo de privacidade.'] }
             ];
 
             const appId = typeof __app_id !== 'undefined' ? __app_id : 'mynotes-app';
@@ -280,10 +287,9 @@
                  lucide.createIcons();
             }
             
-            // Fecha o painel de configurações para ver o resultado após 1.5 segundos
             setTimeout(() => {
                 window.toggleSettings();
-                if(btn) { // Reset button state for future
+                if(btn) {
                     btn.disabled = false;
                     btn.innerHTML = '<i data-lucide="sparkles" width="18" height="18"></i> Gerar Cadernetas de Teste';
                     btn.classList.replace('text-white', 'text-emerald-400');
@@ -292,10 +298,10 @@
             }, 1500);
         }
 
-
         // --- LÓGICA DE RENDERIZAÇÃO ---
         window.renderApp = function() {
             renderSidebar();
+            renderCalendarWidget();
             
             const header = document.getElementById('main-header');
             const container = document.getElementById('notebooks-container');
@@ -312,11 +318,10 @@
                 container.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
                 
                 renderHeader();
-                renderCalendar();
                 renderNotebooks();
             }
             
-            lucide.createIcons(); // Atualiza os ícones SVG
+            lucide.createIcons();
         }
 
         function renderSidebar() {
@@ -326,11 +331,12 @@
                 { id: 'Senhas', icon: 'key', name: 'Senhas' },
                 { id: 'Códigos', icon: 'code-2', name: 'Códigos' },
                 { id: 'Estudos', icon: 'book-open', name: 'Estudos' },
-                { id: 'Pessoal', icon: 'user', name: 'Pessoal' }
+                { id: 'Pessoal', icon: 'user', name: 'Pessoal' },
+                { id: 'Geral', icon: 'layout-grid', name: 'Geral' }
             ];
 
             nav.innerHTML = categories.map(cat => `
-                <button onclick="window.setCategory('${cat.id}')" class="flex flex-col items-center justify-center w-[72px] py-3 rounded-xl transition-all ${window.state.category === cat.id && !window.state.showSettings ? 'bg-white/10 text-white shadow-lg' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}" title="${cat.id}">
+                <button onclick="window.scrollToCategory('${cat.id}')" class="flex flex-col items-center justify-center w-[72px] py-3 rounded-xl transition-all ${window.state.category === cat.id && !window.state.showSettings ? 'bg-white/10 text-white shadow-lg' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}" title="${cat.name}">
                     <i data-lucide="${cat.icon}" width="22" height="22"></i>
                     <span class="text-[9px] font-bold uppercase tracking-wider mt-2">${cat.name}</span>
                 </button>
@@ -339,10 +345,10 @@
             const btnPrivacy = document.getElementById('btn-privacy');
             if (window.state.privacyMode) {
                 btnPrivacy.className = 'flex flex-col items-center justify-center w-[72px] py-3 rounded-xl transition-all bg-red-500/20 text-red-400';
-                btnPrivacy.innerHTML = '<i data-lucide="shield" width="22" height="22"></i>';
+                btnPrivacy.innerHTML = '<i data-lucide="shield" width="20" height="20"></i><span class="text-[9px] font-bold uppercase tracking-wider mt-2">Privado</span>';
             } else {
                 btnPrivacy.className = 'flex flex-col items-center justify-center w-[72px] py-3 rounded-xl transition-all text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20';
-                btnPrivacy.innerHTML = '<i data-lucide="shield-off" width="22" height="22"></i>';
+                btnPrivacy.innerHTML = '<i data-lucide="shield-off" width="20" height="20"></i><span class="text-[9px] font-bold uppercase tracking-wider mt-2">Público</span>';
             }
             
             const btnSettings = document.getElementById('btn-settings');
@@ -355,26 +361,36 @@
 
         function renderHeader() {
             const filtered = getFilteredNotes();
-            document.getElementById('header-stats').innerText = `${window.state.category} • ${filtered.length} Itens`;
+            document.getElementById('header-stats').innerText = `Estante • ${filtered.length} Itens`;
         }
 
-        function renderCalendar() {
+        function renderCalendarWidget() {
+            const calWidget = document.getElementById('calendar-widget');
+            if (window.state.calendarOpen) {
+                calWidget.classList.remove('scale-95', 'opacity-0', 'pointer-events-none');
+                calWidget.classList.add('scale-100', 'opacity-100');
+            } else {
+                calWidget.classList.remove('scale-100', 'opacity-100');
+                calWidget.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+            }
+
             const grid = document.getElementById('calendar-grid');
-            grid.innerHTML = `<span class="text-gray-600">D</span><span class="text-gray-600">S</span><span class="text-gray-600">T</span><span class="text-gray-600">Q</span><span class="text-gray-600">Q</span><span class="text-gray-600">S</span><span class="text-gray-600">S</span>`;
-            
-            for (let i = 1; i <= 31; i++) {
-                const isToday = i === 6;
-                const hasNote = i === 1 || i === 4;
-                grid.innerHTML += `
-                    <div class="relative flex justify-center items-center h-6">
-                        <span class="w-6 h-6 flex items-center justify-center rounded-full ${isToday ? 'bg-[#3E5A7A] text-white shadow-lg' : 'text-gray-400'}">${i}</span>
-                        ${hasNote && !isToday ? '<div class="absolute bottom-0 w-1 h-1 bg-emerald-500 rounded-full"></div>' : ''}
-                    </div>
-                `;
+            if(grid.innerHTML.trim() === '') {
+                // Preenche apenas uma vez
+                grid.innerHTML = `<span class="text-gray-600">D</span><span class="text-gray-600">S</span><span class="text-gray-600">T</span><span class="text-gray-600">Q</span><span class="text-gray-600">Q</span><span class="text-gray-600">S</span><span class="text-gray-600">S</span>`;
+                for (let i = 1; i <= 31; i++) {
+                    const isToday = i === 6;
+                    const hasNote = i === 1 || i === 4;
+                    grid.innerHTML += `
+                        <div class="relative flex justify-center items-center h-6">
+                            <span class="w-6 h-6 flex items-center justify-center rounded-full ${isToday ? 'bg-[#3E5A7A] text-white shadow-lg' : 'text-gray-400'}">${i}</span>
+                            ${hasNote && !isToday ? '<div class="absolute bottom-0 w-1 h-1 bg-emerald-500 rounded-full"></div>' : ''}
+                        </div>
+                    `;
+                }
             }
         }
 
-        // Helper para gerar o HTML do cartão (reutilizável)
         function generateNotebookHTML(note) {
             const totalPages = note.pages ? note.pages.length : 1;
             const content = (note.pages && note.pages[note.currentPage]) ? note.pages[note.currentPage] : '';
@@ -506,51 +522,26 @@
             const container = document.getElementById('notebooks-container');
             const filtered = getFilteredNotes();
             
-            // Modo: TODAS AS CADERNETAS (Grelha com scroll vertical)
-            if (window.state.category === 'Todas') {
-                if (filtered.length === 0) {
-                    container.innerHTML = `
-                        <div class="flex flex-col items-center justify-center h-full text-slate-600 mt-20">
-                            <i data-lucide="search-x" width="64" height="64" class="mb-4 opacity-50"></i>
-                            <p class="text-lg font-serif">Nenhuma caderneta encontrada.</p>
-                            <button onclick="window.toggleSettings()" class="mt-4 px-6 py-2 bg-white/5 hover:bg-white/10 rounded-full text-sm transition-colors">Gerar Dados de Teste nas Configurações</button>
-                        </div>`;
-                    return;
-                }
+            // As prateleiras (categorias) base garantem a ordem correta de exibição
+            const baseCategories = ['Senhas', 'Códigos', 'Estudos', 'Pessoal', 'Geral'];
+            const grouped = {};
 
-                let html = `
-                    <div class="px-12 mb-8 border-l-4 border-[#3E5A7A] ml-12">
-                        <h2 class="text-2xl font-serif text-white tracking-wide">Todas as Cadernetas</h2>
-                        <span class="text-slate-600 text-xs font-bold tracking-widest uppercase">${filtered.length} Cadernetas</span>
-                    </div>
-                    <div class="flex flex-wrap gap-10 px-12 pb-12 ml-12 lg:ml-8 justify-start">
-                `;
-                
-                filtered.forEach(note => {
-                    html += generateNotebookHTML(note);
-                });
-
-                html += `
-                        <div onclick="window.createNewNote('Geral')" class="w-80 h-[460px] flex-shrink-0 border-2 border-dashed border-white/10 rounded-r-2xl flex flex-col items-center justify-center text-gray-600 hover:bg-white/5 hover:border-white/20 hover:text-gray-400 transition-all cursor-pointer">
-                            <i data-lucide="plus" width="40" height="40" class="mb-4 text-[#3E5A7A]"></i>
-                            <span class="text-xs font-bold uppercase tracking-widest text-center px-4">Nova Caderneta<br/><span class="text-[10px] text-gray-600 opacity-60">Geral</span></span>
-                        </div>
-                    </div>
-                `;
-                container.innerHTML = html;
-                return;
+            // Inicializa prateleiras base
+            if (window.state.search === '') {
+                baseCategories.forEach(cat => grouped[cat] = []);
             }
 
-            // Modo: PRATELEIRAS ESPECÍFICAS (Carrossel Horizontal Estilo Netflix)
-            const grouped = filtered.reduce((acc, note) => {
-                if(!acc[note.category]) acc[note.category] = [];
-                acc[note.category].push(note);
-                return acc;
-            }, {});
+            // Popula as prateleiras com os dados filtrados
+            filtered.forEach(note => {
+                const cat = note.category;
+                if(!grouped[cat]) grouped[cat] = [];
+                grouped[cat].push(note);
+            });
 
-            if (window.state.search === '') {
-                if (!grouped[window.state.category]) {
-                    grouped[window.state.category] = [];
+            // Se for resultado de pesquisa, removemos as prateleiras que ficaram vazias
+            if (window.state.search !== '') {
+                for (const cat in grouped) {
+                    if (grouped[cat].length === 0) delete grouped[cat];
                 }
             }
 
@@ -558,7 +549,7 @@
                 container.innerHTML = `
                     <div class="flex flex-col items-center justify-center h-full text-slate-600 mt-20">
                         <i data-lucide="search-x" width="64" height="64" class="mb-4 opacity-50"></i>
-                        <p class="text-lg font-serif">Nenhuma caderneta encontrada nesta categoria.</p>
+                        <p class="text-lg font-serif">Nenhuma caderneta encontrada.</p>
                     </div>`;
                 return;
             }
@@ -569,7 +560,7 @@
                 const shelfId = `shelf-${categoryName.replace(/\s+/g, '-')}`;
                 
                 html += `
-                <div class="mb-14 relative w-full">
+                <div id="section-${categoryName}" class="mb-14 relative w-full pt-4">
                     <div class="flex items-center justify-between px-12 mb-6 border-l-4 border-[#3E5A7A] ml-12">
                         <h2 class="text-2xl font-serif text-white tracking-wide">${categoryName}</h2>
                         <span class="text-slate-600 text-xs font-bold tracking-widest uppercase">${notes.length} Cadernetas</span>
@@ -589,12 +580,17 @@
                     html += generateNotebookHTML(note);
                 });
 
-                // Adiciona o botão "Criar Nova Caderneta" específico para esta prateleira
+                // Adiciona o botão "Criar Nova Caderneta" na prateleira (Apenas se não estiver a pesquisar)
+                if (window.state.search === '') {
+                    html += `
+                                <div onclick="window.createNewNote('${categoryName}')" class="w-80 h-[460px] flex-shrink-0 border-2 border-dashed border-white/10 rounded-r-2xl flex flex-col items-center justify-center text-gray-600 hover:bg-white/5 hover:border-white/20 hover:text-gray-400 transition-all cursor-pointer snap-start">
+                                    <i data-lucide="plus" width="40" height="40" class="mb-4 text-[#3E5A7A]"></i>
+                                    <span class="text-xs font-bold uppercase tracking-widest text-center px-4">Nova Caderneta<br/><span class="text-[10px] text-gray-600 opacity-60">em ${categoryName}</span></span>
+                                </div>
+                    `;
+                }
+
                 html += `
-                            <div onclick="window.createNewNote('${categoryName}')" class="w-80 h-[460px] flex-shrink-0 border-2 border-dashed border-white/10 rounded-r-2xl flex flex-col items-center justify-center text-gray-600 hover:bg-white/5 hover:border-white/20 hover:text-gray-400 transition-all cursor-pointer snap-start">
-                                <i data-lucide="plus" width="40" height="40" class="mb-4 text-[#3E5A7A]"></i>
-                                <span class="text-xs font-bold uppercase tracking-widest text-center px-4">Nova Caderneta<br/><span class="text-[10px] text-gray-600 opacity-60">em ${categoryName}</span></span>
-                            </div>
                         </div>
 
                         <!-- Seta Direita -->
@@ -614,9 +610,40 @@
         window.toggleSettings = () => {
             window.state.showSettings = !window.state.showSettings;
             if(window.state.showSettings) {
-                window.state.category = 'Todas'; // Reset view for background
+                window.state.category = 'Todas'; 
             }
             window.renderApp();
+        };
+
+        window.toggleCalendar = () => {
+            window.state.calendarOpen = !window.state.calendarOpen;
+            renderCalendarWidget();
+        };
+
+        window.scrollToCategory = (catId) => {
+            window.state.showSettings = false;
+            window.state.category = catId; // Set active context
+            
+            renderSidebar(); // Highlight category
+            
+            const container = document.getElementById('notebooks-container');
+            
+            if (catId === 'Todas') {
+                container.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                const section = document.getElementById(`section-${catId}`);
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+            
+            // Re-render is not needed just for scrolling, but we called renderSidebar
+            // However, we want to make sure the view isn't stuck in settings
+            const header = document.getElementById('main-header');
+            const settingsPanel = document.getElementById('settings-panel');
+            if(settingsPanel && !settingsPanel.classList.contains('hidden')) {
+                window.renderApp();
+            }
         };
 
         window.scrollShelf = (shelfId, direction) => {
@@ -630,18 +657,16 @@
 
         function getFilteredNotes() {
             return window.state.notebooks.filter(n => {
-                const matchCat = window.state.category === 'Todas' || n.category === window.state.category;
-                const matchSearch = n.title.toLowerCase().includes(window.state.search.toLowerCase()) || 
-                                    (n.tags||[]).some(t => t.toLowerCase().includes(window.state.search.toLowerCase()));
-                return matchCat && matchSearch;
+                const term = window.state.search.toLowerCase();
+                if (term === '') return true; // Se não houver pesquisa, devolve tudo
+                
+                const matchTitle = n.title.toLowerCase().includes(term);
+                const matchSubtitle = (n.subtitle || '').toLowerCase().includes(term);
+                const matchTags = (n.tags||[]).some(t => t.toLowerCase().includes(term));
+                
+                return matchTitle || matchSubtitle || matchTags;
             });
         }
-
-        window.setCategory = (cat) => {
-            window.state.showSettings = false; // Fecha settings se clicar em categoria
-            window.state.category = cat;
-            window.renderApp();
-        };
 
         window.updateSearch = (val) => {
             window.state.search = val;
