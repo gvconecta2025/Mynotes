@@ -289,7 +289,7 @@ export default function App() {
             <div className="bg-black/40 border border-white/10 p-5 rounded-2xl backdrop-blur-md shadow-xl w-64">
                <h3 className="text-xs uppercase tracking-widest text-[#3E5A7A] mb-4 text-center font-bold">Maio 2026</h3>
                <div className="grid grid-cols-7 gap-y-3 text-[11px] text-center font-medium">
-                  {['D','S','T','Q','Q','S','S'].map(d => <span key={d} className="text-gray-500">{d}</span>)}
+                  {['D','S','T','Q','Q','S','S'].map((d, index) => <span key={`${d}-${index}`} className="text-gray-500">{d}</span>)}
                   {[...Array(31)].map((_, i) => {
                     const isToday = i + 1 === 6;
                     const hasNote = i + 1 === 1 || i + 1 === 4 || i + 1 === 6;
