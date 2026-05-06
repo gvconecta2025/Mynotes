@@ -34,7 +34,7 @@
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.1); }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.2); }
 
-        /* Ocultar scrollbar apenas nas prateleiras horizontais */
+        /* Ocultar scrollbar apenas nas prateleiras horizontais e sidebar */
         .hide-scrollbar {
             -ms-overflow-style: none;  /* IE and Edge */
             scrollbar-width: none;  /* Firefox */
@@ -44,19 +44,20 @@
         }
     </style>
 </head>
-<body class="bg-[#0a0c10] text-gray-100 min-h-screen flex overflow-hidden selection:bg-slate-700">
+<body class="bg-[#0a0c10] text-gray-100 h-screen flex overflow-hidden selection:bg-slate-700">
 
     <!-- BARRA LATERAL -->
-    <aside class="w-24 bg-black/50 border-r border-white/5 flex flex-col items-center py-6 gap-8 flex-shrink-0 z-20">
-        <div class="w-14 h-14 bg-[#3E5A7A] rounded-xl flex items-center justify-center shadow-lg cursor-pointer text-xl font-bold font-serif text-white">
+    <!-- Adicionado h-full e overflow-y-auto hide-scrollbar para garantir que os botões não somem em telas pequenas -->
+    <aside class="w-24 h-full overflow-y-auto hide-scrollbar bg-black/50 border-r border-white/5 flex flex-col items-center py-6 gap-6 flex-shrink-0 z-20">
+        <div class="w-14 h-14 bg-[#3E5A7A] rounded-xl flex items-center justify-center shadow-lg cursor-pointer text-xl font-bold font-serif text-white shrink-0">
             MN
         </div>
         
-        <nav class="flex flex-col gap-3 w-full items-center" id="nav-categories">
+        <nav class="flex flex-col gap-3 w-full items-center shrink-0" id="nav-categories">
             <!-- Botões injetados via JS -->
         </nav>
 
-        <div class="mt-auto flex flex-col gap-4 items-center w-full px-2">
+        <div class="mt-auto flex flex-col gap-4 items-center w-full px-2 shrink-0 pt-6">
             <button onclick="window.togglePrivacy()" id="btn-privacy" class="flex flex-col items-center justify-center w-[72px] py-3 rounded-xl transition-all text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20" title="Ativar Escudo de Privacidade">
                 <i data-lucide="shield-off" width="20" height="20"></i>
                 <span class="text-[9px] font-bold uppercase tracking-wider mt-2">Privado</span>
@@ -147,10 +148,13 @@
                     
                     <!-- Configurações Visuais -->
                     <div class="space-y-4">
-                        <h3 class="text-xl font-bold flex items-center gap-3 text-[#3E5A7A]"><i data-lucide="palette"></i> Aparência</h3>
-                        <p class="text-sm text-slate-400 leading-relaxed">Personalize a textura das capas e o tema global da plataforma (disponível na próxima atualização).</p>
+                        <h3 class="text-xl font-bold flex items-center gap-3 text-[#3E5A7A]"><i data-lucide="palette"></i> Aparência e Pautas</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">Personalize a textura das capas e a visibilidade das linhas (pautas) dentro dos cadernos.</p>
                         <div class="flex gap-4 pt-2">
-                            <button class="bg-[#3E5A7A] hover:bg-[#2b4058] px-5 py-2.5 rounded-lg text-sm font-medium transition-colors text-white">Modo Escuro (Ativo)</button>
+                            <button class="bg-[#3E5A7A] cursor-default px-5 py-2.5 rounded-lg text-sm font-medium transition-colors text-white">Modo Escuro</button>
+                            <button id="btn-global-lines" onclick="window.toggleGlobalLines()" class="bg-[#3E5A7A] hover:bg-[#2b4058] px-5 py-2.5 rounded-lg text-sm font-medium transition-colors text-white flex items-center gap-2">
+                                <i data-lucide="align-justify" width="18" height="18"></i> Pautas Ativas
+                            </button>
                         </div>
                     </div>
                     
@@ -203,6 +207,7 @@
             privacyMode: false,
             showSettings: false,
             calendarOpen: true,
+            globalShowLines: true, // Novo estado para pautas globais
             userId: null
         };
 
@@ -259,16 +264,16 @@
              const dateStr = new Date().toLocaleDateString('pt-BR');
              
              const testNotebooks = [
-                { title: 'Acessos AWS', subtitle: 'Cloud Infraestrutura', date: dateStr, tags: ['aws', 'root'], category: 'Senhas', color: 'bg-[#b85a1c]', pages: ['Login AWS\nURL: aws.amazon.com\nUser: admin\nPass: **********'] },
-                { title: 'Home Banking', subtitle: 'Dados Pessoais', date: dateStr, tags: ['banco', 'finanças'], category: 'Senhas', color: 'bg-[#1e3a5f]', pages: ['NIB: 0000 0000 0000 0000\nPIN: ****\n\nCartão de Crédito:\nNum: 1234 5678 9101 1121\nCVC: ***'] },
-                { title: 'Componentes React', subtitle: 'UI Library', date: dateStr, tags: ['frontend', 'react'], category: 'Códigos', color: 'bg-[#0f5c5c]', pages: ['export function Button({ children }) {\n  return (\n    <button className="btn-primary">\n      {children}\n    </button>\n  );\n}'] },
-                { title: 'Scripts Python', subtitle: 'Data Science', date: dateStr, tags: ['python', 'dados'], category: 'Códigos', color: 'bg-[#3b4129]', pages: ['import pandas as pd\n\ndf = pd.read_csv("data.csv")\nprint(df.head())\n\n# Filtrar dados\nativos = df[df["status"] == "ativo"]'] },
-                { title: 'Física Quântica', subtitle: 'Resumos Semestre 1', date: dateStr, tags: ['universidade', 'física'], category: 'Estudos', color: 'bg-[#402a4d]', pages: ['A dualidade onda-partícula afirma que luz e matéria exibem propriedades tanto de ondas quanto de partículas.\n\nEquação de Schrödinger...'] },
-                { title: 'Inglês B2', subtitle: 'Vocabulário', date: dateStr, tags: ['línguas', 'inglês'], category: 'Estudos', color: 'bg-[#5f2e2e]', pages: ['To grasp = compreender, agarrar\nTo endeavor = esforçar-se\nTo mitigate = mitigar, atenuar\n\nExpressões úteis:\n"Out of the blue" - De repente'] },
-                { title: 'Diário de Bordo', subtitle: 'Reflexões e Hábitos', date: dateStr, tags: ['diário', 'vida'], category: 'Pessoal', color: 'bg-[#2a4d3e]', pages: ['Hoje foi um dia incrivelmente produtivo. Consegui implementar as novas funcionalidades no sistema de notas.\n\nAmanhã o foco será otimizar a performance.'] },
-                { title: 'Receitas da Avó', subtitle: 'Doces e Salgados', date: dateStr, tags: ['culinária', 'casa'], category: 'Pessoal', color: 'bg-[#996a2e]', pages: ['Bolo de Cenoura\n\nIngredientes:\n- 3 cenouras\n- 2 chávenas de açúcar\n- 1/2 chávena de óleo\n- 4 ovos\n- 2 chávenas de farinha\n\nPreparação: ...'] },
-                { title: 'Viagem ao Japão', subtitle: 'Roteiro 2026', date: dateStr, tags: ['viagem', 'férias'], category: 'Pessoal', color: 'bg-[#732a3f]', pages: ['Dia 1: Chegada a Tóquio (Narita). Fazer check-in no hotel em Shinjuku.\n\nDia 2: Visita a Quioto. Apanhar o Shinkansen de manhã cedo.\n\nDia 3: Osaka...'] },
-                { title: 'Ideias de App', subtitle: 'Brainstorming', date: dateStr, tags: ['projetos', 'ideias'], category: 'Geral', color: 'bg-[#465a6e]', pages: ['MyNotes - App de anotações tátil\n\n- Usar cadernos virtuais.\n- Firebase para sincronização.\n- Cada categoria tem a sua própria prateleira.\n- Suporte para tags e modo de privacidade.'] }
+                { title: 'Acessos AWS', subtitle: 'Cloud Infraestrutura', date: dateStr, tags: ['aws', 'root'], category: 'Senhas', color: 'bg-[#b85a1c]', showLines: true, pages: ['Login AWS\nURL: aws.amazon.com\nUser: admin\nPass: **********'] },
+                { title: 'Home Banking', subtitle: 'Dados Pessoais', date: dateStr, tags: ['banco', 'finanças'], category: 'Senhas', color: 'bg-[#1e3a5f]', showLines: true, pages: ['NIB: 0000 0000 0000 0000\nPIN: ****\n\nCartão de Crédito:\nNum: 1234 5678 9101 1121\nCVC: ***'] },
+                { title: 'Componentes React', subtitle: 'UI Library', date: dateStr, tags: ['frontend', 'react'], category: 'Códigos', color: 'bg-[#0f5c5c]', showLines: true, pages: ['export function Button({ children }) {\n  return (\n    <button className="btn-primary">\n      {children}\n    </button>\n  );\n}'] },
+                { title: 'Scripts Python', subtitle: 'Data Science', date: dateStr, tags: ['python', 'dados'], category: 'Códigos', color: 'bg-[#3b4129]', showLines: true, pages: ['import pandas as pd\n\ndf = pd.read_csv("data.csv")\nprint(df.head())\n\n# Filtrar dados\nativos = df[df["status"] == "ativo"]'] },
+                { title: 'Física Quântica', subtitle: 'Resumos Semestre 1', date: dateStr, tags: ['universidade', 'física'], category: 'Estudos', color: 'bg-[#402a4d]', showLines: true, pages: ['A dualidade onda-partícula afirma que luz e matéria exibem propriedades tanto de ondas quanto de partículas.\n\nEquação de Schrödinger...'] },
+                { title: 'Inglês B2', subtitle: 'Vocabulário', date: dateStr, tags: ['línguas', 'inglês'], category: 'Estudos', color: 'bg-[#5f2e2e]', showLines: true, pages: ['To grasp = compreender, agarrar\nTo endeavor = esforçar-se\nTo mitigate = mitigar, atenuar\n\nExpressões úteis:\n"Out of the blue" - De repente'] },
+                { title: 'Diário de Bordo', subtitle: 'Reflexões e Hábitos', date: dateStr, tags: ['diário', 'vida'], category: 'Pessoal', color: 'bg-[#2a4d3e]', showLines: true, pages: ['Hoje foi um dia incrivelmente produtivo. Consegui implementar as novas funcionalidades no sistema de notas.\n\nAmanhã o foco será otimizar a performance.'] },
+                { title: 'Receitas da Avó', subtitle: 'Doces e Salgados', date: dateStr, tags: ['culinária', 'casa'], category: 'Pessoal', color: 'bg-[#996a2e]', showLines: true, pages: ['Bolo de Cenoura\n\nIngredientes:\n- 3 cenouras\n- 2 chávenas de açúcar\n- 1/2 chávena de óleo\n- 4 ovos\n- 2 chávenas de farinha\n\nPreparação: ...'] },
+                { title: 'Viagem ao Japão', subtitle: 'Roteiro 2026', date: dateStr, tags: ['viagem', 'férias'], category: 'Pessoal', color: 'bg-[#732a3f]', showLines: true, pages: ['Dia 1: Chegada a Tóquio (Narita). Fazer check-in no hotel em Shinjuku.\n\nDia 2: Visita a Quioto. Apanhar o Shinkansen de manhã cedo.\n\nDia 3: Osaka...'] },
+                { title: 'Ideias de App', subtitle: 'Brainstorming', date: dateStr, tags: ['projetos', 'ideias'], category: 'Geral', color: 'bg-[#465a6e]', showLines: true, pages: ['MyNotes - App de anotações tátil\n\n- Usar cadernos virtuais.\n- Firebase para sincronização.\n- Cada categoria tem a sua própria prateleira.\n- Suporte para tags e modo de privacidade.'] }
             ];
 
             const appId = typeof __app_id !== 'undefined' ? __app_id : 'mynotes-app';
@@ -302,6 +307,7 @@
         window.renderApp = function() {
             renderSidebar();
             renderCalendarWidget();
+            renderSettingsMenu();
             
             const header = document.getElementById('main-header');
             const container = document.getElementById('notebooks-container');
@@ -322,6 +328,19 @@
             }
             
             lucide.createIcons();
+        }
+
+        function renderSettingsMenu() {
+            const btnLines = document.getElementById('btn-global-lines');
+            if (btnLines) {
+                if (window.state.globalShowLines) {
+                    btnLines.className = 'bg-[#3E5A7A] hover:bg-[#2b4058] px-5 py-2.5 rounded-lg text-sm font-medium transition-colors text-white flex items-center gap-2';
+                    btnLines.innerHTML = '<i data-lucide="align-justify" width="18" height="18"></i> Pautas Ativas';
+                } else {
+                    btnLines.className = 'bg-slate-700 hover:bg-slate-600 px-5 py-2.5 rounded-lg text-sm font-medium transition-colors text-white flex items-center gap-2';
+                    btnLines.innerHTML = '<i data-lucide="file" width="18" height="18"></i> Pautas Ocultas';
+                }
+            }
         }
 
         function renderSidebar() {
@@ -357,6 +376,8 @@
             } else {
                 btnSettings.className = 'flex flex-col items-center justify-center w-[72px] py-3 text-gray-500 hover:text-gray-300 transition-all rounded-xl hover:bg-white/5';
             }
+            // Força a reinserção do innerHTML para evitar desaparecimento
+            btnSettings.innerHTML = '<i data-lucide="settings" width="20" height="20"></i><span class="text-[9px] font-bold uppercase tracking-wider mt-2">Ajustes</span>';
         }
 
         function renderHeader() {
@@ -395,6 +416,10 @@
             const totalPages = note.pages ? note.pages.length : 1;
             const content = (note.pages && note.pages[note.currentPage]) ? note.pages[note.currentPage] : '';
             const spiralsHtml = Array(20).fill().map(() => `<div class="h-2 w-full bg-gradient-to-b from-gray-300 via-white to-gray-500 rounded-full border border-gray-600 shadow-md"></div>`).join('');
+
+            // Lógica das pautas (linhas)
+            const showLocalLines = note.showLines !== false; // default é true
+            const displayLines = window.state.globalShowLines && showLocalLines;
 
             let html = `<div class="relative w-80 h-[460px] flex-shrink-0 transition-transform duration-300 hover:scale-[1.02] snap-start">`;
             
@@ -452,6 +477,14 @@
                             </div>
 
                             <div class="flex flex-col gap-1">
+                                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Pautas (Linhas)</label>
+                                <select onchange="window.updateNoteMeta('${note.id}', 'showLines', this.value === 'true')" class="w-full bg-white border border-slate-300 rounded p-2 text-sm outline-none focus:border-[#3E5A7A]">
+                                    <option value="true" ${showLocalLines ? 'selected' : ''}>Com Pautas (Linhas)</option>
+                                    <option value="false" ${!showLocalLines ? 'selected' : ''}>Página Lisa (Em Branco)</option>
+                                </select>
+                            </div>
+
+                            <div class="flex flex-col gap-1">
                                 <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Tags (separadas por vírgula)</label>
                                 <input type="text" value="${tagsString}" onblur="window.updateNoteMeta('${note.id}', 'tags', this.value)" placeholder="ex: python, dev, log" class="w-full bg-white border border-slate-300 rounded p-2 text-sm outline-none focus:border-[#3E5A7A]">
                             </div>
@@ -465,10 +498,10 @@
                             <textarea 
                                 oninput="window.updateNoteData('${note.id}', this.value)"
                                 onblur="window.saveNoteData('${note.id}')"
-                                class="w-full h-full bg-transparent resize-none outline-none p-5 text-slate-800 font-sans leading-[32px] lines-bg ${window.state.privacyMode ? 'blur-md select-none pointer-events-none' : ''}"
-                                style="padding-left: 40px;" spellcheck="false" placeholder="Comece a escrever nesta página em branco..."
+                                class="w-full h-full bg-transparent resize-none outline-none p-5 text-slate-800 font-sans leading-[32px] ${displayLines ? 'lines-bg' : ''} ${window.state.privacyMode ? 'blur-md select-none pointer-events-none' : ''}"
+                                style="padding-left: ${displayLines ? '40px' : '20px'};" spellcheck="false" placeholder="Comece a escrever nesta página em branco..."
                             >${content}</textarea>
-                            <div class="absolute left-8 top-0 bottom-0 w-px bg-red-300/60 pointer-events-none"></div>
+                            ${displayLines ? '<div class="absolute left-8 top-0 bottom-0 w-px bg-red-300/60 pointer-events-none"></div>' : ''}
                         </div>
                     `;
                 }
@@ -526,9 +559,11 @@
             const baseCategories = ['Senhas', 'Códigos', 'Estudos', 'Pessoal', 'Geral'];
             const grouped = {};
 
-            // Inicializa prateleiras base
-            if (window.state.search === '') {
+            // Inicializa prateleiras base se não houver pesquisa e não estivermos numa categoria específica
+            if (window.state.search === '' && window.state.category === 'Todas') {
                 baseCategories.forEach(cat => grouped[cat] = []);
+            } else if (window.state.search === '' && window.state.category !== 'Todas') {
+                grouped[window.state.category] = [];
             }
 
             // Popula as prateleiras com os dados filtrados
@@ -538,7 +573,7 @@
                 grouped[cat].push(note);
             });
 
-            // Se for resultado de pesquisa, removemos as prateleiras que ficaram vazias
+            // Removemos as prateleiras que ficaram vazias durante uma pesquisa
             if (window.state.search !== '') {
                 for (const cat in grouped) {
                     if (grouped[cat].length === 0) delete grouped[cat];
@@ -614,6 +649,11 @@
             }
             window.renderApp();
         };
+        
+        window.toggleGlobalLines = () => {
+            window.state.globalShowLines = !window.state.globalShowLines;
+            window.renderApp();
+        };
 
         window.toggleCalendar = () => {
             window.state.calendarOpen = !window.state.calendarOpen;
@@ -630,19 +670,16 @@
             
             if (catId === 'Todas') {
                 container.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                const section = document.getElementById(`section-${catId}`);
-                if (section) {
-                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }
-            
-            // Re-render is not needed just for scrolling, but we called renderSidebar
-            // However, we want to make sure the view isn't stuck in settings
-            const header = document.getElementById('main-header');
-            const settingsPanel = document.getElementById('settings-panel');
-            if(settingsPanel && !settingsPanel.classList.contains('hidden')) {
                 window.renderApp();
+            } else {
+                window.renderApp(); // Render just that category first
+                // Use setTimeout to ensure DOM is updated before scrolling
+                setTimeout(() => {
+                    const section = document.getElementById(`section-${catId}`);
+                    if (section) {
+                        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 50);
             }
         };
 
@@ -658,8 +695,15 @@
         function getFilteredNotes() {
             return window.state.notebooks.filter(n => {
                 const term = window.state.search.toLowerCase();
-                if (term === '') return true; // Se não houver pesquisa, devolve tudo
+                if (term === '') {
+                    // Quando não pesquisa, filtra pela categoria ativa no menu
+                    if (window.state.category !== 'Todas') {
+                        return n.category === window.state.category;
+                    }
+                    return true;
+                }
                 
+                // Modo de pesquisa ignora a categoria ativa e procura em todos os sítios
                 const matchTitle = n.title.toLowerCase().includes(term);
                 const matchSubtitle = (n.subtitle || '').toLowerCase().includes(term);
                 const matchTags = (n.tags||[]).some(t => t.toLowerCase().includes(term));
@@ -716,6 +760,8 @@
             if (note && window.state.userId) {
                 if (field === 'tags') {
                     note[field] = value.split(',').map(t => t.trim()).filter(t => t !== '');
+                } else if (field === 'showLines') {
+                    note[field] = value === true || value === 'true'; // Force boolean
                 } else {
                     note[field] = value;
                 }
@@ -820,6 +866,7 @@
                  tags: ['novo'],
                  category: targetCategory || 'Geral', // Usa a prateleira atual
                  color: 'bg-[#5f6368]',
+                 showLines: true,
                  pages: ['']
              };
              
