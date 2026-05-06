@@ -14,7 +14,7 @@ import {
   PenTool
 } from 'lucide-react';
 
-// --- DADOS INICIAIS (Em Memória) ---
+/* --- DADOS INICIAIS (Em Memória) --- */
 const initialNotebooks = [
   {
     id: '1',
@@ -55,12 +55,12 @@ const initialNotebooks = [
   }
 ];
 
-// --- COMPONENTE DA CADERNETA ---
+/* --- COMPONENTE DA CADERNETA --- */
 const Notebook = ({ note, isActive, privacyMode, onToggleOpen, onUpdateContent }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
-  // Fecha o caderno se o modo de privacidade for ativado
+  /* Fecha o caderno se o modo de privacidade for ativado */
   useEffect(() => {
     if (privacyMode) setIsOpen(false);
   }, [privacyMode]);
@@ -81,7 +81,7 @@ const Notebook = ({ note, isActive, privacyMode, onToggleOpen, onUpdateContent }
       </div>
 
       {!isOpen ? (
-        // --- CAPA FECHADA ---
+        /* --- CAPA FECHADA --- */
         <div 
           onClick={handleOpen}
           className={`w-full h-full ${note.coverColor} rounded-r-lg shadow-2xl border-l-4 border-black/40 cursor-pointer relative overflow-hidden group`}
@@ -126,7 +126,7 @@ const Notebook = ({ note, isActive, privacyMode, onToggleOpen, onUpdateContent }
           </div>
         </div>
       ) : (
-        // --- CADERNO ABERTO (Páginas) ---
+        /* --- CADERNO ABERTO (Páginas) --- */
         <div className="w-full h-full bg-[#Fdfbf7] rounded-r-lg shadow-2xl border-l border-gray-300 relative flex flex-col">
           {/* Cabeçalho da Página */}
           <div className="flex justify-between items-center p-4 border-b border-red-200/50 bg-[#Fdfbf7] rounded-tr-lg">
@@ -179,14 +179,14 @@ const Notebook = ({ note, isActive, privacyMode, onToggleOpen, onUpdateContent }
   );
 };
 
-// --- COMPONENTE PRINCIPAL (App) ---
+/* --- COMPONENTE PRINCIPAL (App) --- */
 export default function App() {
   const [notebooks, setNotebooks] = useState(initialNotebooks);
   const [activeCategory, setActiveCategory] = useState('Todas');
   const [privacyMode, setPrivacyMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Filtra as cadernetas com base na categoria e busca
+  /* Filtra as cadernetas com base na categoria e busca */
   const filteredNotebooks = notebooks.filter(note => {
     const matchesCategory = activeCategory === 'Todas' || note.category === activeCategory;
     const matchesSearch = note.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -194,7 +194,7 @@ export default function App() {
     return matchesCategory && matchesSearch;
   });
 
-  // Mostra no máximo 3 cadernetas no palco principal
+  /* Mostra no máximo 3 cadernetas no palco principal */
   const displayNotebooks = filteredNotebooks.slice(0, 3);
 
   const handleUpdateContent = (noteId, pageIndex, newContent) => {
