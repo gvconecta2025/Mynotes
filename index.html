@@ -59,10 +59,6 @@
             transform: scale(1.1);
             border-radius: 12px;
         }
-
-        /* Estilos para a Toolbar de Formatação */
-        .toolbar-btn { @apply p-1.5 hover:bg-gray-200 rounded text-gray-600 transition-colors flex items-center justify-center; }
-        .toolbar-select { @apply bg-transparent border border-gray-300 rounded px-1 text-[11px] font-bold text-gray-600 outline-none cursor-pointer hover:bg-gray-200; height: 26px; }
     </style>
 </head>
 <body class="text-gray-100 h-screen flex overflow-hidden relative">
@@ -620,7 +616,7 @@
                 `;
             }
 
-            // CADERNO ABERTO COM PAINEL RICO
+            // CADERNO ABERTO COM PAINEL RICO (CORRIGIDO PARA CONTRASTE)
             return `
                 <div class="${isMax?'fixed inset-0 z-[2000] p-10 bg-black/90 backdrop-blur-xl':'relative w-80 h-[460px] flex-shrink-0'} flex items-center justify-center transition-all duration-500">
                     
@@ -636,62 +632,62 @@
                         
                         <div class="flex-1 flex flex-col relative">
                             
-                            <!-- PAINEL DE FORMATAÇÃO -->
-                            <div class="bg-gray-100 border-b p-2 flex flex-wrap gap-2 items-center shrink-0">
+                            <!-- PAINEL DE FORMATAÇÃO (ESTILOS INLINE PARA GARANTIR RENDERIZAÇÃO) -->
+                            <div class="bg-slate-100 border-b border-slate-300 p-2 flex flex-wrap gap-2 items-center shrink-0">
                                 ${isMax ? `
-                                    <select onchange="window.exec('fontName', this.value)" class="toolbar-select w-28">
+                                    <select onchange="window.exec('fontName', this.value)" class="bg-white border border-slate-300 rounded px-2 text-[11px] font-bold text-slate-800 outline-none cursor-pointer hover:border-slate-400 focus:border-[#3E5A7A] transition-colors h-[28px] w-28 shadow-sm">
                                         <option value="Inter">Inter (Padrão)</option>
                                         <option value="Merriweather">Merriweather (Serif)</option>
                                         <option value="Playfair Display">Elegante</option>
                                         <option value="Roboto Mono">Código</option>
                                     </select>
                                     
-                                    <select onchange="window.exec('fontSize', this.value)" class="toolbar-select w-12">
+                                    <select onchange="window.exec('fontSize', this.value)" class="bg-white border border-slate-300 rounded px-2 text-[11px] font-bold text-slate-800 outline-none cursor-pointer hover:border-slate-400 focus:border-[#3E5A7A] transition-colors h-[28px] w-14 shadow-sm">
                                         <option value="3">12</option><option value="4">14</option><option value="5">18</option><option value="6">24</option><option value="7">32</option>
                                     </select>
 
-                                    <div class="w-px h-5 bg-gray-300 mx-1"></div>
+                                    <div class="w-px h-5 bg-slate-300 mx-1"></div>
 
-                                    <button onclick="window.exec('bold')" class="toolbar-btn" title="Negrito"><i data-lucide="bold" width="14"></i></button>
-                                    <button onclick="window.exec('italic')" class="toolbar-btn" title="Itálico"><i data-lucide="italic" width="14"></i></button>
-                                    <button onclick="window.exec('underline')" class="toolbar-btn" title="Sublinhado"><i data-lucide="underline" width="14"></i></button>
-                                    <button onclick="window.exec('strikeThrough')" class="toolbar-btn" title="Riscado"><i data-lucide="type" width="14"></i></button>
+                                    <button onclick="window.exec('bold')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700 hover:text-slate-900 transition-colors flex items-center justify-center" title="Negrito"><i data-lucide="bold" width="14"></i></button>
+                                    <button onclick="window.exec('italic')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700 hover:text-slate-900 transition-colors flex items-center justify-center" title="Itálico"><i data-lucide="italic" width="14"></i></button>
+                                    <button onclick="window.exec('underline')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700 hover:text-slate-900 transition-colors flex items-center justify-center" title="Sublinhado"><i data-lucide="underline" width="14"></i></button>
+                                    <button onclick="window.exec('strikeThrough')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700 hover:text-slate-900 transition-colors flex items-center justify-center" title="Riscado"><i data-lucide="type" width="14"></i></button>
 
-                                    <div class="w-px h-5 bg-gray-300 mx-1"></div>
+                                    <div class="w-px h-5 bg-slate-300 mx-1"></div>
 
-                                    <button onclick="window.exec('justifyLeft')" class="toolbar-btn"><i data-lucide="align-left" width="14"></i></button>
-                                    <button onclick="window.exec('justifyCenter')" class="toolbar-btn"><i data-lucide="align-center" width="14"></i></button>
-                                    <button onclick="window.exec('justifyRight')" class="toolbar-btn"><i data-lucide="align-right" width="14"></i></button>
+                                    <button onclick="window.exec('justifyLeft')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700 hover:text-slate-900 transition-colors flex items-center justify-center" title="Alinhar à Esquerda"><i data-lucide="align-left" width="14"></i></button>
+                                    <button onclick="window.exec('justifyCenter')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700 hover:text-slate-900 transition-colors flex items-center justify-center" title="Centralizar"><i data-lucide="align-center" width="14"></i></button>
+                                    <button onclick="window.exec('justifyRight')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700 hover:text-slate-900 transition-colors flex items-center justify-center" title="Alinhar à Direita"><i data-lucide="align-right" width="14"></i></button>
                                     
-                                    <div class="w-px h-5 bg-gray-300 mx-1"></div>
+                                    <div class="w-px h-5 bg-slate-300 mx-1"></div>
 
-                                    <button onclick="window.exec('insertUnorderedList')" class="toolbar-btn"><i data-lucide="list" width="14"></i></button>
-                                    <button onclick="window.exec('insertOrderedList')" class="toolbar-btn"><i data-lucide="list-ordered" width="14"></i></button>
+                                    <button onclick="window.exec('insertUnorderedList')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700 hover:text-slate-900 transition-colors flex items-center justify-center" title="Lista"><i data-lucide="list" width="14"></i></button>
+                                    <button onclick="window.exec('insertOrderedList')" class="p-1.5 hover:bg-slate-200 rounded text-slate-700 hover:text-slate-900 transition-colors flex items-center justify-center" title="Lista Numerada"><i data-lucide="list-ordered" width="14"></i></button>
                                     
-                                    <div class="w-px h-5 bg-gray-300 mx-1"></div>
+                                    <div class="w-px h-5 bg-slate-300 mx-1"></div>
 
                                     <input type="color" onchange="window.exec('foreColor', this.value)" class="w-6 h-6 border-none cursor-pointer bg-transparent p-0" title="Cor do Texto">
                                     
-                                    <button onclick="window.insertLink()" class="toolbar-btn" title="Inserir Link"><i data-lucide="link" width="14"></i></button>
+                                    <button onclick="window.insertLink()" class="p-1.5 hover:bg-slate-200 rounded text-slate-700 hover:text-slate-900 transition-colors flex items-center justify-center" title="Inserir Link"><i data-lucide="link" width="14"></i></button>
                                     
                                     <div class="relative">
-                                        <button onclick="window.toggleEmojiPicker()" class="toolbar-btn" title="Emoji"><i data-lucide="smile" width="14"></i></button>
-                                        <div id="emoji-picker" class="hidden absolute top-10 left-0 bg-white border border-gray-300 shadow-xl p-3 rounded-xl z-[3000] w-[180px]">
+                                        <button onclick="window.toggleEmojiPicker()" class="p-1.5 hover:bg-slate-200 rounded text-slate-700 hover:text-slate-900 transition-colors flex items-center justify-center" title="Emoji"><i data-lucide="smile" width="14"></i></button>
+                                        <div id="emoji-picker" class="hidden absolute top-10 left-0 bg-white border border-slate-300 shadow-xl p-3 rounded-xl z-[3000] w-[180px]">
                                             <div class="emoji-grid">${['😊','🔥','💡','✅','🚀','⭐','📍','📌','💻','📝'].map(e => `<button onclick="window.insertEmoji('${e}')" class="hover:scale-125 transition-transform text-xl">${e}</button>`).join('')}</div>
                                         </div>
                                     </div>
-                                    <button onclick="window.insertPDF()" class="toolbar-btn text-red-500 hover:bg-red-100" title="Inserir Documento PDF"><i data-lucide="file-text" width="14"></i></button>
+                                    <button onclick="window.insertPDF()" class="p-1.5 hover:bg-red-100 rounded text-red-500 hover:text-red-700 transition-colors flex items-center justify-center" title="Inserir Documento PDF"><i data-lucide="file-text" width="14"></i></button>
                                 ` : `
-                                    <span class="text-[10px] font-bold text-gray-500 uppercase ml-2 tracking-widest">${noteNumber} - Pág ${note.currentPage + 1}</span>
+                                    <span class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">${noteNumber} - Pág ${note.currentPage + 1}</span>
                                 `}
 
                                 <div class="flex-1"></div>
                                 
                                 <!-- Controles Janela Windows Style -->
                                 <div class="flex items-center gap-1 mr-2">
-                                    <button onclick="event.stopPropagation(); window.closeNote('${note.id}')" class="w-8 h-8 flex items-center justify-center hover:bg-gray-300 text-gray-600 rounded transition-colors" title="Minimizar"><i data-lucide="minus" width="14"></i></button>
-                                    <button onclick="event.stopPropagation(); window.toggleMaximize('${note.id}')" class="w-8 h-8 flex items-center justify-center hover:bg-gray-300 text-gray-600 rounded transition-colors" title="${isMax?'Restaurar':'Maximizar'}"><i data-lucide="${isMax?'copy':'square'}" width="14"></i></button>
-                                    <button onclick="event.stopPropagation(); window.closeNote('${note.id}')" class="w-8 h-8 flex items-center justify-center hover:bg-red-500 hover:text-white text-gray-600 rounded transition-colors" title="Fechar"><i data-lucide="x" width="14"></i></button>
+                                    <button onclick="event.stopPropagation(); window.closeNote('${note.id}')" class="w-8 h-8 flex items-center justify-center hover:bg-slate-300 text-slate-600 rounded transition-colors" title="Minimizar"><i data-lucide="minus" width="14"></i></button>
+                                    <button onclick="event.stopPropagation(); window.toggleMaximize('${note.id}')" class="w-8 h-8 flex items-center justify-center hover:bg-slate-300 text-slate-600 rounded transition-colors" title="${isMax?'Restaurar':'Maximizar'}"><i data-lucide="${isMax?'copy':'square'}" width="14"></i></button>
+                                    <button onclick="event.stopPropagation(); window.closeNote('${note.id}')" class="w-8 h-8 flex items-center justify-center hover:bg-red-500 hover:text-white text-slate-600 rounded transition-colors" title="Fechar"><i data-lucide="x" width="14"></i></button>
                                 </div>
                             </div>
                             
